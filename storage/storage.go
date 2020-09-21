@@ -5,6 +5,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/wmentor/lemmas/log"
 	"github.com/wmentor/tokens"
 )
 
@@ -35,6 +36,8 @@ func Load(in io.Reader) {
 
 		if len(list) > 1 {
 			res[list[0]] = strings.Join(list[1:], "|")
+		} else if len(list) == 1 {
+			log.Log("ERROR", "invalid string: %s", strings.TrimSpace(str))
 		}
 	}
 
