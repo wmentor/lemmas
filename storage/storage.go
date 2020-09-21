@@ -2,8 +2,8 @@ package storage
 
 import (
 	"bufio"
-	"fmt"
 	"io"
+	"os"
 	"sort"
 	"strings"
 
@@ -46,6 +46,16 @@ func Load(in io.Reader) {
 	data = res
 }
 
+func LoadFile(filename string) error {
+	if rh, e := os.Open(filename); e == nil {
+		defer rh.Close()
+		Load(rh)
+	} else {
+		return e
+	}
+	return nil
+}
+
 func Save(out io.Writer) {
 	bw := bufio.NewWriter(out)
 	defer bw.Flush()
@@ -58,8 +68,26 @@ func Save(out io.Writer) {
 
 	sort.Sort(sort.StringSlice(list))
 
-	for _, k := range list {
+	for i, k := range list {
 		v := data[k]
-		fmt.Fprintf(bw, "%s %s\n", k, v)
+
+		bw.WriteString(k)
+		bw.WriteRune(' ')
+		bw.WriteString(v)
+		bw.WriteRune('\n')
+
+		if (i+1)%100 == 0 {
+			bw.Flush()
+		}
 	}
+}
+
+func SaveFile(filename string) error {
+	if wh, err := os.Create(filename); err == nil {
+		defer wh.Close()
+		Save(wh)
+	} else {
+		return err
+	}
+	return nil
 }
