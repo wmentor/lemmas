@@ -102,7 +102,7 @@ func EachBase(form string, callback func(string) bool) {
 
 	if val, has := forms[form]; has {
 		for {
-			idx := strings.Index(val, "|")
+			idx := strings.Index(val, " ")
 			if idx < 0 {
 				callback(val)
 				return
