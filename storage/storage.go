@@ -130,3 +130,24 @@ func EachCurBase(word string, callback func(string) bool) {
 		return callback(w)
 	})
 }
+
+func Set(form string, bases ...string) {
+	forms[form] = strings.Join(bases, " ")
+}
+
+func Append(form string, base string) {
+	val := forms[form]
+	var list []string
+	tokens.Process(strings.NewReader(val), func(t string) {
+		list = append(list, t)
+	})
+
+	for _, v := range list {
+		if v == base {
+			return
+		}
+	}
+
+	list = append(list, base)
+	forms[form] = strings.Join(list, " ")
+}
