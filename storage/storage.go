@@ -98,6 +98,10 @@ func Has(form string) bool {
 	return has
 }
 
+func GetRaw(form string) string {
+	return forms[form]
+}
+
 func EachBase(form string, callback func(string) bool) {
 
 	if val, has := forms[form]; has {
@@ -132,7 +136,11 @@ func EachCurBase(word string, callback func(string) bool) {
 }
 
 func Set(form string, bases ...string) {
-	forms[form] = strings.Join(bases, " ")
+	if len(bases) == 0 {
+		delete(forms, form)
+	} else {
+		forms[form] = strings.Join(bases, " ")
+	}
 }
 
 func Append(form string, base string) {
