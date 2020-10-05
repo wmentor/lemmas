@@ -1,15 +1,19 @@
 package lemmas
 
 import (
+	"io"
 	"os"
 	"strings"
 
 	"github.com/wmentor/lemmas/storage"
+	"github.com/wmentor/tokens"
 )
 
 var (
 	filename string
 )
+
+type LemmaFunc func(string)
 
 func Open(src string) error {
 
@@ -38,7 +42,7 @@ func DelForm(form string) {
 	storage.Set(form)
 }
 
-func ProcForm(form string) string {
+func ProcessForm(form string) string {
 
 	for pos, _ := range form {
 		if pos == 0 {
@@ -69,4 +73,23 @@ func ProcForm(form string) string {
 	}
 
 	return form
+}
+
+func Process(in io.Reader, fn LemmaFunc) {
+	tokens.Process(in, func(t string) {
+		fn(ProcessForm(t))
+	})
+}
+
+func Stream(in io.Reader) <-chan string {
+	out := make(chan string, 2048)
+
+	go func() {
+		defer close(out)
+		Process(in, func(w string) {
+			out <- w
+		})
+	}()
+
+	return out
 }
