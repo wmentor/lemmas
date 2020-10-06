@@ -11,7 +11,22 @@ import (
 
 var (
 	filename string
+	signs    map[string]bool
 )
+
+func init() {
+	signs = map[string]bool{
+		".":  true,
+		",":  true,
+		"?":  true,
+		"!":  true,
+		";":  true,
+		":":  true,
+		"\"": true,
+		"'":  true,
+		"-":  true,
+	}
+}
 
 type LemmaFunc func(string)
 
@@ -44,6 +59,10 @@ func DelForm(form string) {
 
 func ProcessForm(form string) string {
 
+	if signs[form] {
+		return form
+	}
+
 	for pos, _ := range form {
 		if pos == 0 {
 			if v := storage.GetRaw(form); v != "" {
@@ -57,7 +76,7 @@ func ProcessForm(form string) string {
 				maker := strings.Builder{}
 				has := false
 
-				storage.EachCurBase(suf, func(f string) bool {
+				storage.EachBase(suf, func(f string) bool {
 					if has {
 						maker.WriteRune(' ')
 					}
@@ -67,7 +86,9 @@ func ProcessForm(form string) string {
 					return true
 				})
 
-				return maker.String()
+				if has {
+					return maker.String()
+				}
 			}
 		}
 	}
