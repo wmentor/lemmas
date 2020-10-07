@@ -67,8 +67,34 @@ func ProcessForm(form string) string {
 		return v
 	}
 
-	for pos, _ := range form {
+	for pos, run := range form {
 		if pos > 0 {
+
+			if run == '-' {
+				f1 := ProcessForm(form[:pos])
+				f2 := ProcessForm(form[pos+1:])
+
+				fl1 := strings.Split(f1, " ")
+				fl2 := strings.Split(f2, " ")
+
+				maker := strings.Builder{}
+				has := false
+
+				for _, w1 := range fl1 {
+					for _, w2 := range fl2 {
+						if has {
+							maker.WriteRune(' ')
+						}
+						has = true
+						maker.WriteString(w1)
+						maker.WriteRune('-')
+						maker.WriteString(w2)
+					}
+				}
+
+				return maker.String()
+			}
+
 			suf := form[pos:]
 			if storage.Has(suf) {
 				pref := form[:pos]
