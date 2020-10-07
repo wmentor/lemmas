@@ -63,12 +63,12 @@ func ProcessForm(form string) string {
 		return form
 	}
 
+	if v := storage.GetRaw(form); v != "" {
+		return v
+	}
+
 	for pos, _ := range form {
-		if pos == 0 {
-			if v := storage.GetRaw(form); v != "" {
-				return v
-			}
-		} else {
+		if pos > 0 {
 			suf := form[pos:]
 			if storage.Has(suf) {
 				pref := form[:pos]
