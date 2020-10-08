@@ -34,7 +34,11 @@ func Open(src string) error {
 
 	if src == "" {
 		if filename = os.Getenv("WMENTOR_LEMMAS_DB"); filename == "" {
-			filename = "lemmas.db"
+			if filename = os.Getenv("GOPATH"); filename != "" {
+				filename = filename + "/src/github.com/wmentor/lemmas/lemmas.db"
+			} else {
+				filename = "lemmas.db"
+			}
 		}
 	} else {
 		filename = src

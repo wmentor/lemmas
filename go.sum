@@ -1,2 +1,16 @@
+github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 h1:sR+/8Yb4slttB4vD+b9btVEnWgL3Q00OBTzVT8B9C0c=
+github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53/go.mod h1:+3IMCy2vIlbG1XG/0ggNQv0SvxCAIpPM5b1nCz56Xno=
+github.com/CloudyKit/jet v2.1.2+incompatible h1:ybZoYzMBdoijK6I+Ke3vg9GZsmlKo/ZhKdNMWz0P26c=
+github.com/CloudyKit/jet v2.1.2+incompatible/go.mod h1:HPYO+50pSWkPoj9Q/eq0aRGByCL6ScRlUmiEX5Zgm+w=
+github.com/wmentor/jrpc v1.0.2 h1:HHgG0d8ZW8cmjbiUWBvg+i2C6phphY0QQLD5JHyh6gM=
+github.com/wmentor/jrpc v1.0.2/go.mod h1:u56wAC8JtFs2we+NSvoQ66oAhU0fNQ0tmn8EAftO/1k=
+github.com/wmentor/latency v1.0.0 h1:G+JZVaRG6qW2Lzgv5Y9T1aiFETEqiQEYXuTSWvh2hZ8=
+github.com/wmentor/latency v1.0.0/go.mod h1:WLQCiWrolPQZPot5HRFE5kMaanoOlOfbJraUyHePPCg=
+github.com/wmentor/serv v1.0.4 h1:91vCp7s26Iz4cLORX0VjmVxkKj/W2NFHeT4MWqcdvV8=
+github.com/wmentor/serv v1.0.4/go.mod h1:PXtGhgofLc9sZdzuAv7t9BHTcEgbLN1qZ6XFaWQwOOU=
 github.com/wmentor/tokens v1.0.0 h1:OkPv+dvE+r2gOeJdTJExDvocavstfmp8X6fO43XKdAo=
 github.com/wmentor/tokens v1.0.0/go.mod h1:2Vw6+Br138zGpi+jnt5UUatsGckZPQBYQ4F/WqG7taA=
+github.com/wmentor/tt v1.0.0 h1:TaVIwklNHxCJf6ZGdGFBMMed2VCMp33D3tlm3TzSB5k=
+github.com/wmentor/tt v1.0.0/go.mod h1:UInfmaL3BqW7CqBKvLHVwinfsM2HuII9iCaiwakkCPU=
+github.com/wmentor/uniq v1.0.0 h1:h4//Rt/C6+SOQn5HhURRvJFeBUPzglip996sG8ln6y8=
+github.com/wmentor/uniq v1.0.0/go.mod h1:v7DrXGBZ/eKhNMvgKOOB93NIVaJnIy8ESYYg3+4/Qgg=
