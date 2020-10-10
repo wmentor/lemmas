@@ -6,6 +6,7 @@ import (
 	"github.com/wmentor/lemmas"
 	"github.com/wmentor/serv"
 
+	_ "github.com/wmentor/lemmas/server/controller/forms/raw"
 	_ "github.com/wmentor/lemmas/server/controller/forms/save"
 )
 

@@ -1,0 +1,10 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+<form method="POST">
+Данные:<br/>
+<textarea name="data" rows="40" style="WIDTH:500px;"></textarea> <br/>
+<input type="submit" value="ВВОД">
+</form>
+</body>
+</html>
