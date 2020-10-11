@@ -3,6 +3,7 @@ package lemmas
 import (
 	"io"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/wmentor/lemmas/storage"
@@ -16,6 +17,7 @@ var (
 
 func init() {
 	signs = map[string]bool{
+		"":   true,
 		".":  true,
 		",":  true,
 		"?":  true,
@@ -59,6 +61,26 @@ func AddForm(form string, bases ...string) {
 
 func DelForm(form string) {
 	storage.Set(form)
+}
+
+func CanProcess(form string) bool {
+	if signs[form] {
+		return true
+	}
+
+	if storage.Has(form) {
+		return true
+	}
+
+	if _, err := strconv.ParseInt(form, 10, 64); err == nil {
+		return true
+	}
+
+	if idx := strings.Index(form, "-"); idx >= 0 {
+		return CanProcess(form[:idx]) && CanProcess(form[idx+1:])
+	}
+
+	return false
 }
 
 func ProcessForm(form string) string {

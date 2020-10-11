@@ -15,6 +15,12 @@ func TestLemmas(t *testing.T) {
 		}
 	}
 
+	tCP := func(src string, wait bool) {
+		if CanProcess(src) != wait {
+			t.Fatalf("CanProcess(%s) != %t", src, wait)
+		}
+	}
+
 	tPF(".", ".")
 	tPF(",", ",")
 	tPF("тигру", "тигр")
@@ -25,4 +31,13 @@ func TestLemmas(t *testing.T) {
 	tPF("летчик-испытатель", "летчик-испытатель")
 	tPF("налетчику", "налетчик")
 	tPF("игры", "игра игры")
+
+	tCP(",", true)
+	tCP("тигр", true)
+	tCP("тигра", true)
+	tCP("летчиком-испытателем", true)
+	tCP("летчик-испытатель", true)
+	tCP("тигр-", true)
+	tCP("123123123", true)
+	tCP("___.12312331", false)
 }
