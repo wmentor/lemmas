@@ -40,4 +40,5 @@ func TestLemmas(t *testing.T) {
 	tCP("тигр-", true)
 	tCP("123123123", true)
 	tCP("___.12312331", false)
+	tCP("налетчиком", true)
 }

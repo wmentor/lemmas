@@ -76,8 +76,17 @@ func CanProcess(form string) bool {
 		return true
 	}
 
-	if idx := strings.Index(form, "-"); idx >= 0 {
-		return CanProcess(form[:idx]) && CanProcess(form[idx+1:])
+	for idx, run := range form {
+		if idx != 0 {
+			if run == '-' {
+				return CanProcess(form[:idx]) && CanProcess(form[idx+1:])
+			} else {
+				suf := form[idx:]
+				if storage.Has(suf) {
+					return true
+				}
+			}
+		}
 	}
 
 	return false
