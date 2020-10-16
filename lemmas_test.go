@@ -1,6 +1,7 @@
 package lemmas
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -13,11 +14,30 @@ func TestLemmas(t *testing.T) {
 		if res := ProcessForm(src); res != wait {
 			t.Fatalf("ProcessForm(%s) != %s", src, wait)
 		}
+		var res []string
+		EachBase(src, func(l string) bool {
+			res = append(res, l)
+			return true
+		})
+		if strings.Join(res, " ") != wait {
+			t.Fatalf("EachBase failed for: %s", src)
+		}
 	}
 
 	tCP := func(src string, wait bool) {
 		if CanProcess(src) != wait {
 			t.Fatalf("CanProcess(%s) != %t", src, wait)
+		}
+	}
+
+	tCEB := func(src string, wait string) {
+		var res []string
+		CurEachBase(src, func(l string) bool {
+			res = append(res, l)
+			return true
+		})
+		if strings.Join(res, " ") != wait {
+			t.Fatalf("EachBase failed for: %s", src)
 		}
 	}
 
@@ -41,4 +61,7 @@ func TestLemmas(t *testing.T) {
 	tCP("123123123", true)
 	tCP("___.12312331", false)
 	tCP("налетчиком", true)
+
+	tCEB("налетчиком", "налетчиком налетчик")
+	tCEB("летчиком-испытателем", "летчиком-испытателем летчик-испытатель")
 }

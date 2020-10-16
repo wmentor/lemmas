@@ -92,6 +92,28 @@ func CanProcess(form string) bool {
 	return false
 }
 
+func EachBase(form string, fn func(string) bool) {
+	res := ProcessForm(form)
+	for _, v := range strings.Split(res, " ") {
+		if !fn(v) {
+			return
+		}
+	}
+}
+
+func CurEachBase(form string, fn func(string) bool) {
+	if !fn(form) {
+		return
+	}
+
+	res := ProcessForm(form)
+	for _, v := range strings.Split(res, " ") {
+		if v != form && !fn(v) {
+			return
+		}
+	}
+}
+
 func ProcessForm(form string) string {
 
 	if signs[form] {
