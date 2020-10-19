@@ -48,5 +48,7 @@ func save(c *serv.Context) {
 		}
 	}
 
+	lemmas.Save()
+
 	page(c)
 }
