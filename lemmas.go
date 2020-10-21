@@ -29,6 +29,12 @@ func init() {
 		"-":  true,
 		"«":  true,
 		"»":  true,
+		"[":  true,
+		"]":  true,
+		"(":  true,
+		")":  true,
+		"{":  true,
+		"}":  true,
 	}
 }
 
