@@ -3,7 +3,7 @@ package lemmas
 import (
 	"strings"
 
-	"github.com/wmentor/lemmas"
+	"github.com/wmentor/lemmas/lemma"
 	"github.com/wmentor/serv"
 )
 
@@ -24,7 +24,7 @@ func proc(c *serv.Context) {
 
 	maker := strings.Builder{}
 
-	lemmas.Process(strings.NewReader(data), func(l string) {
+	lemma.Process(strings.NewReader(data), func(l string) {
 		maker.WriteString(strings.ReplaceAll(l, " ", "|"))
 		maker.WriteRune(' ')
 	})

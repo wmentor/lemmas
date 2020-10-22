@@ -3,7 +3,7 @@ package text
 import (
 	"strings"
 
-	"github.com/wmentor/lemmas"
+	"github.com/wmentor/lemmas/lemma"
 	"github.com/wmentor/serv"
 	"github.com/wmentor/tokens"
 )
@@ -26,7 +26,7 @@ func proc(c *serv.Context) {
 	maker := strings.Builder{}
 
 	tokens.Process(strings.NewReader(data), func(t string) {
-		if lemmas.CanProcess(t) {
+		if lemma.CanProcess(t) {
 			maker.WriteString("<span class=\"oldtok\">")
 			maker.WriteString(t)
 			maker.WriteString("</span> ")

@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"strings"
 
-	"github.com/wmentor/lemmas"
+	"github.com/wmentor/lemmas/lemma"
 	"github.com/wmentor/serv"
 	"github.com/wmentor/tokens"
 )
@@ -44,11 +44,11 @@ func save(c *serv.Context) {
 		tokens.Process(strings.NewReader(str), fn)
 
 		if len(list) > 1 {
-			lemmas.AddForm(list[0], (list[1:])...)
+			lemma.AddForm(list[0], (list[1:])...)
 		}
 	}
 
-	lemmas.Save()
+	lemma.Save()
 
 	page(c)
 }
