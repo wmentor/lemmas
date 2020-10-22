@@ -1,4 +1,4 @@
-package lemmas
+package lemma
 
 import (
 	"io"
@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/wmentor/lemmas/storage"
+	"github.com/wmentor/lemmas/lemma/storage"
 	"github.com/wmentor/tokens"
 )
 

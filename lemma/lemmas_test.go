@@ -1,4 +1,4 @@
-package lemmas
+package lemma
 
 import (
 	"strings"

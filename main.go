@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 
-	"github.com/wmentor/lemmas"
+	"github.com/wmentor/lemmas/lemma"
 	"github.com/wmentor/serv"
 
-	_ "github.com/wmentor/lemmas/server/controller"
+	_ "github.com/wmentor/lemmas/controller"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 
 	flag.Parse()
 
-	lemmas.Open("")
+	lemma.Open("")
 
 	serv.LoadTemplates("./templates")
 
