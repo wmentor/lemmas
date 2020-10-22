@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/wmentor/lemmas/log"
+	"github.com/wmentor/log"
 	"github.com/wmentor/tokens"
 )
 
@@ -40,7 +40,7 @@ func Load(in io.Reader) {
 		if len(list) > 1 {
 			res[list[0]] = strings.Join(list[1:], " ")
 		} else if len(list) == 1 {
-			log.Log("ERROR", "invalid string: %s", strings.TrimSpace(str))
+			log.Errorf("invalid string: %s", strings.TrimSpace(str))
 		}
 	}
 
@@ -119,20 +119,6 @@ func EachBase(form string, callback func(string) bool) {
 	} else if _, err := strconv.ParseInt(form, 10, 64); err == nil {
 		callback(form)
 	}
-}
-
-func EachCurBase(word string, callback func(string) bool) {
-	if !callback(word) {
-		return
-	}
-
-	EachBase(word, func(w string) bool {
-		if w == word {
-			return true
-		}
-
-		return callback(w)
-	})
 }
 
 func Set(form string, bases ...string) {

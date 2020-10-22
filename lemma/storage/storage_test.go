@@ -32,35 +32,16 @@ func TestStorage(t *testing.T) {
 		}
 	}
 
-	tCBI := func(form string, wait string) {
-		var list []string
-		EachCurBase(form, func(t string) bool {
-			list = append(list, t)
-			return true
-		})
-		res := strings.Join(list, " ")
-		if res != wait {
-			t.Fatalf("Invalid cur/bases for: %s", form)
-		}
-	}
-
 	tBI("хранилище", "хранилище")
 	tBI("хранилища", "хранилища хранилище")
 	tBI("хранилищ", "хранилища")
 	tBI("12", "12")
 
-	tCBI("хранилище", "хранилище")
-	tCBI("хранилища", "хранилища хранилище")
-	tCBI("хранилищ", "хранилищ хранилища")
-	tCBI("12", "12")
-
 	Set("хранилища")
 
 	tBI("хранилища", "")
-	tCBI("хранилища", "хранилища")
 
 	Set("хранилища", "хранилища", "хранилище")
 
 	tBI("хранилища", "хранилища хранилище")
-	tCBI("хранилища", "хранилища хранилище")
 }
