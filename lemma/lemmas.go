@@ -117,7 +117,7 @@ func Open(src string) error {
 	if src == "" {
 		if filename = os.Getenv("WMENTOR_LEMMAS_DB"); filename == "" {
 			if filename = os.Getenv("GOPATH"); filename != "" {
-				filename = filename + "/src/github.com/wmentor/lemmas/lemmas.db"
+				filename = filename + "/src/github.com/wmentor/lemmas/data/lemmas.db"
 			} else {
 				filename = "lemmas.db"
 			}
