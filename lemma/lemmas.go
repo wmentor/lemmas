@@ -153,6 +153,10 @@ func CanProcess(form string) bool {
 		return true
 	}
 
+	if strings.IndexAny(form, ".:/#_@") >= 0 {
+		return true
+	}
+
 	return canProcess(form)
 }
 
