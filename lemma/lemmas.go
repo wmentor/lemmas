@@ -118,19 +118,21 @@ type LemmaFunc func(string)
 
 func Open(src string) error {
 
+	var dir string
+
 	if src == "" {
-		if filename = os.Getenv("WMENTOR_LEMMAS_DB"); filename == "" {
-			if filename = os.Getenv("GOPATH"); filename != "" {
-				filename = filename + "/src/github.com/wmentor/lemmas/data/lemmas.db"
+		if dir = os.Getenv("LEMMAS_DATA"); dir == "" {
+			if dir = os.Getenv("GOPATH"); dir != "" {
+				dir = dir + "/src/github.com/wmentor/lemmas/data"
 			} else {
-				filename = "lemmas.db"
+				dir = "./data"
 			}
 		}
 	} else {
-		filename = src
+		dir = src
 	}
 
-	return storage.LoadFile(filename)
+	return storage.LoadFile(dir + "/lemmas.db")
 }
 
 func Save() error {

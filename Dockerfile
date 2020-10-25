@@ -8,4 +8,4 @@ COPY . .
 
 RUN go build -v -a
 
-CMD /var/lib/lemmas/lemmas -lemmas /var/lib/lemmas/data/lemmas.db
+CMD /var/lib/lemmas/lemmas -data /var/lib/lemmas/data
