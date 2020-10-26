@@ -7,13 +7,14 @@ import (
 	"strings"
 
 	"github.com/wmentor/lemmas/lemma/storage"
+	"github.com/wmentor/log"
 	"github.com/wmentor/tokens"
 )
 
 var (
-	filename string
-	signs    map[string]bool
-	tinyMap  map[string]string
+	dir     string
+	signs   map[string]bool
+	tinyMap map[string]string
 )
 
 func init() {
@@ -39,86 +40,12 @@ func init() {
 		"%":  true,
 	}
 
-	tinyMap = map[string]string{
-		"a":        "a",
-		"by":       "by",
-		"i":        "i",
-		"ii":       "ii",
-		"iii":      "iii",
-		"in":       "in",
-		"into":     "into",
-		"iv":       "iv",
-		"ix":       "ix",
-		"the":      "the",
-		"to":       "to",
-		"v":        "v",
-		"vi":       "vi",
-		"vii":      "vii",
-		"viii":     "viii",
-		"x":        "x",
-		"а":        "а",
-		"ах":       "ах",
-		"без":      "без",
-		"бы":       "бы",
-		"в":        "в",
-		"ведь":     "ведь",
-		"во":       "в",
-		"вот":      "вот",
-		"где":      "где",
-		"где-то":   "где-то",
-		"даже":     "даже",
-		"джо":      "джо",
-		"для":      "для",
-		"если":     "если",
-		"же":       "же",
-		"за":       "за",
-		"и":        "и",
-		"или":      "или",
-		"из":       "из",
-		"к":        "к",
-		"как":      "как",
-		"как-то":   "как-то",
-		"км":       "км",
-		"когда":    "когда",
-		"когда-то": "когда-то",
-		"кто":      "кто",
-		"кто-то":   "кто-то",
-		"ли":       "ли",
-		"либо":     "или",
-		"мм":       "мм",
-		"на":       "на",
-		"над":      "над",
-		"не":       "не",
-		"ни":       "ни",
-		"но":       "но",
-		"о":        "о",
-		"об":       "о",
-		"обо":      "о",
-		"по":       "по",
-		"под":      "под",
-		"с":        "с",
-		"см":       "см",
-		"со":       "с",
-		"среди":    "среди",
-		"сша":      "сша",
-		"так":      "так",
-		"также":    "также",
-		"то":       "то",
-		"тогда":    "тогда",
-		"тоже":     "тоже",
-		"у":        "у",
-		"что":      "что",
-		"что-то":   "что-то",
-		"чтоб":     "чтобы",
-		"чтобы":    "чтобы",
-	}
+	tinyMap = map[string]string{}
 }
 
 type LemmaFunc func(string)
 
-func Open(src string) error {
-
-	var dir string
+func Open(src string) {
 
 	if src == "" {
 		if dir = os.Getenv("LEMMAS_DATA"); dir == "" {
@@ -132,11 +59,17 @@ func Open(src string) error {
 		dir = src
 	}
 
-	return storage.LoadFile(dir + "/lemmas.db")
+	if err := storage.LoadLemmasFile(dir + "/lemmas.db"); err != nil {
+		log.Errorf("load %s/lemmas.db failed: %s", dir, err.Error())
+	}
+
+	if err := storage.LoadBasicFile(dir + "/basic.db"); err != nil {
+		log.Errorf("load %s/basic.db failed: %s", dir, err.Error())
+	}
 }
 
 func Save() error {
-	return storage.SaveFile(filename)
+	return storage.SaveLemmasFile(dir + "/lemmas.db")
 }
 
 func AddForm(form string, bases ...string) {
@@ -155,7 +88,7 @@ func CanProcess(form string) bool {
 		return true
 	}
 
-	if _, ok := tinyMap[form]; ok {
+	if _, ok := storage.GetBasicForms(form); ok {
 		return true
 	}
 
@@ -224,7 +157,7 @@ func ProcessForm(form string) string {
 		return form
 	}
 
-	if res, ok := tinyMap[form]; ok {
+	if res, ok := storage.GetBasicForms(form); ok {
 		return res
 	}
 

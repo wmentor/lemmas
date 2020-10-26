@@ -13,10 +13,57 @@ import (
 )
 
 var (
-	forms map[string]string = map[string]string{}
+	forms      map[string]string = map[string]string{}
+	basicForms map[string]string = map[string]string{}
 )
 
-func Load(in io.Reader) {
+func LoadBasic(in io.Reader) {
+
+	br := bufio.NewReader(in)
+	res := map[string]string{}
+
+	var list []string = make([]string, 0, 10)
+
+	fn := func(t string) {
+		list = append(list, t)
+	}
+
+	for {
+		str, err := br.ReadString('\n')
+		if err != nil && str == "" {
+			break
+		}
+
+		list = list[:0]
+
+		tokens.Process(strings.NewReader(str), fn)
+
+		if len(list) > 1 {
+			res[list[0]] = strings.Join(list[1:], " ")
+		} else if len(list) == 1 {
+			log.Errorf("invalid string: %s", strings.TrimSpace(str))
+		}
+	}
+
+	basicForms = res
+}
+
+func GetBasicForms(form string) (string, bool) {
+	str, ok := basicForms[form]
+	return str, ok
+}
+
+func LoadBasicFile(filename string) error {
+	if rh, e := os.Open(filename); e == nil {
+		defer rh.Close()
+		LoadBasic(rh)
+	} else {
+		return e
+	}
+	return nil
+}
+
+func LoadLemmas(in io.Reader) {
 
 	br := bufio.NewReader(in)
 	res := map[string]string{}
@@ -47,17 +94,17 @@ func Load(in io.Reader) {
 	forms = res
 }
 
-func LoadFile(filename string) error {
+func LoadLemmasFile(filename string) error {
 	if rh, e := os.Open(filename); e == nil {
 		defer rh.Close()
-		Load(rh)
+		LoadLemmas(rh)
 	} else {
 		return e
 	}
 	return nil
 }
 
-func Save(out io.Writer) {
+func SaveLemmas(out io.Writer) {
 	bw := bufio.NewWriter(out)
 	defer bw.Flush()
 
@@ -83,10 +130,10 @@ func Save(out io.Writer) {
 	}
 }
 
-func SaveFile(filename string) error {
+func SaveLemmasFile(filename string) error {
 	if wh, err := os.Create(filename); err == nil {
 		defer wh.Close()
-		Save(wh)
+		SaveLemmas(wh)
 	} else {
 		return err
 	}

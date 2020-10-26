@@ -6,9 +6,7 @@ import (
 )
 
 func TestLemmas(t *testing.T) {
-	if Open("") != nil {
-		t.Fatal("Open failed")
-	}
+	Open("")
 
 	tPF := func(src string, wait string) {
 		if res := ProcessForm(src); res != wait {

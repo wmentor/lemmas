@@ -18,7 +18,7 @@ func TestStorage(t *testing.T) {
 хранилищах хранилища
   `
 
-	Load(strings.NewReader(data))
+	LoadLemmas(strings.NewReader(data))
 
 	tBI := func(form string, wait string) {
 		var list []string
