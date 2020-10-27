@@ -1,8 +1,0 @@
-<!DOCTYPE HTML>
-<html>
-<body>
-<form method="POST">
-Форма <input name="form"> База <input name="base"> <input type="submit" value="Добавить">
-</form>
-</body>
-</html>

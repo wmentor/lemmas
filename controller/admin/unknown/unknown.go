@@ -1,4 +1,4 @@
-package text
+package unknown
 
 import (
 	"strings"
@@ -9,14 +9,14 @@ import (
 )
 
 func init() {
-	serv.Register("GET", "/text", page)
-	serv.Register("POST", "/text", proc)
+	serv.Register("GET", "/admin/unknown", page)
+	serv.Register("POST", "/admin/unknown", proc)
 }
 
 func page(c *serv.Context) {
 	c.SetContentType("text/html; charset=utf-8")
 	c.WriteHeader(200)
-	c.Render("text_new.jet", nil)
+	c.Render("admin/unknown_form.jet", nil)
 }
 
 func proc(c *serv.Context) {
@@ -39,5 +39,5 @@ func proc(c *serv.Context) {
 
 	c.SetContentType("text/html; charset=utf-8")
 	c.WriteHeader(200)
-	c.Render("text_proc.jet", map[string]interface{}{"data": maker.String()})
+	c.Render("admin/unknown_res.jet", map[string]interface{}{"data": maker.String()})
 }

@@ -1,4 +1,4 @@
-package raw
+package forms
 
 import (
 	"bufio"
@@ -10,14 +10,14 @@ import (
 )
 
 func init() {
-	serv.Register("GET", "/forms/raw", page)
-	serv.Register("POST", "/forms/raw", save)
+	serv.Register("GET", "/admin/forms", page)
+	serv.Register("POST", "/admin/forms", save)
 }
 
 func page(c *serv.Context) {
 	c.SetContentType("text/html; charset=utf-8")
 	c.WriteHeader(200)
-	c.Render("forms_raw.jet", nil)
+	c.Render("admin/forms.jet", nil)
 }
 
 func save(c *serv.Context) {
