@@ -103,10 +103,10 @@ func (f Flag) String() string {
 }
 
 func (f Flag) ToIntStr() string {
-	return strconv.FormatUint(uint64(f), 10)
+	return strconv.FormatUint(uint64(f), 16)
 }
 
 func FromIntStr(str string) Flag {
-	val, _ := strconv.ParseUint(str, 10, 64)
+	val, _ := strconv.ParseUint(str, 16, 64)
 	return Flag(val)
 }

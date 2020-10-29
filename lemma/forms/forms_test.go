@@ -25,4 +25,9 @@ func TestForms(t *testing.T) {
 		t.Fatal("Get unknown value failed")
 	}
 
+	Reset()
+
+	if _, ok := Get("t1"); ok {
+		t.Fatal("Get unknown value failed")
+	}
 }

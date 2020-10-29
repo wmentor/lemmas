@@ -12,6 +12,10 @@ var (
 	data map[string]string = map[string]string{}
 )
 
+func Reset() {
+	data = make(map[string]string)
+}
+
 func Add(src string, srcFlags, base string, baseFlags string) {
 
 	if src == "" || base == "" {
