@@ -1,6 +1,7 @@
 package flags
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -52,7 +53,7 @@ func init() {
 	decode = map[Flag]string{}
 
 	list := []string{"noun", "adj", "verb", "pret", "sg", "mg", "mr", "gr", "sr", "ip", "rp", "dp", "vp", "tp", "pp",
-		"f1", "f2", "f3", "name", "sname", "lname", "prof", "roman"}
+		"f1", "f2", "f3", "fn", "sn", "ln", "prof", "roman"}
 
 	cur := Flag(0x01)
 
@@ -99,4 +100,13 @@ func (f Flag) String() string {
 	}
 
 	return maker.String()
+}
+
+func (f Flag) ToIntStr() string {
+	return strconv.FormatUint(uint64(f), 10)
+}
+
+func FromIntStr(str string) Flag {
+	val, _ := strconv.ParseUint(str, 10, 64)
+	return Flag(val)
 }
