@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/wmentor/lemmas/lemma/groups"
 	"github.com/wmentor/lemmas/lemma/storage"
 	"github.com/wmentor/log"
 	"github.com/wmentor/tokens"
@@ -65,6 +66,10 @@ func Open(src string) {
 
 	if err := storage.LoadBasicFile(dir + "/basic.db"); err != nil {
 		log.Errorf("load %s/basic.db failed: %s", dir, err.Error())
+	}
+
+	if err := groups.LoadFile(dir + "/words.db"); err != nil {
+		log.Errorf("load %s/words.db failed: %s", dir, err.Error())
 	}
 }
 
