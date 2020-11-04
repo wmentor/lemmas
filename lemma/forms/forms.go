@@ -2,60 +2,27 @@ package forms
 
 import (
 	"strings"
+
+	"github.com/wmentor/lemmas/lemma/opts"
 )
 
-const (
-	sep string = "|"
-)
-
-var (
-	data map[string]string = map[string]string{}
-)
-
-func Reset() {
-	data = make(map[string]string)
+type Form struct {
+	Name string
+	Opts opts.Opts
 }
 
-func Add(src string, srcFlags, base string, baseFlags string) {
+func New(txt string) *Form {
 
-	if src == "" || base == "" {
-		return
+	if idx := strings.Index(txt, ":"); idx > 0 {
+		return &Form{
+			Name: txt[:idx],
+			Opts: opts.New(txt[idx+1:]),
+		}
 	}
 
-	maker := strings.Builder{}
-
-	if str, has := data[src]; has {
-		maker.WriteString(str)
-		maker.WriteString(sep)
-	}
-
-	if srcFlags != "" {
-		maker.WriteString(srcFlags)
-	} else {
-		maker.WriteRune('0')
-	}
-
-	maker.WriteString(sep)
-	maker.WriteString(base)
-	maker.WriteString(sep)
-
-	if baseFlags != "" {
-		maker.WriteString(baseFlags)
-	} else {
-		maker.WriteRune('0')
-	}
-
-	data[src] = maker.String()
+	return nil
 }
 
-func Get(src string) ([]string, bool) {
-	if res, ok := data[src]; ok {
-		return strings.Split(res, sep), true
-	}
-	return nil, false
-}
-
-func Has(src string) bool {
-	_, has := data[src]
-	return has
+func (f *Form) String() string {
+	return f.Name + ":" + f.Opts.String()
 }
