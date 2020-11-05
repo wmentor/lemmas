@@ -51,6 +51,8 @@ const (
 	O_ROMAN // roman number
 
 	O_END // LAST BIT
+
+	O_MASK Opts = 0xffffffffffffffff
 )
 
 var (
