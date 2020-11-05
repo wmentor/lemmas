@@ -3,7 +3,7 @@ package forms
 import (
 	"strings"
 
-	"github.com/wmentor/lemmas/lemma/opts"
+	"github.com/wmentor/lemmas/engine/opts"
 )
 
 type Form struct {
