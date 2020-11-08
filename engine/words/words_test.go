@@ -13,6 +13,9 @@ func TestWords(t *testing.T) {
 			if w.String() != txt {
 				t.Fatalf("String failed for: %s", txt)
 			}
+			if string(w.Bytes()) != txt {
+				t.Fatalf("Bytes failed for: %s", txt)
+			}
 			if w.Opts != o {
 				t.Fatalf("Invalid opts for: %s", txt)
 			}

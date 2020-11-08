@@ -1,6 +1,7 @@
 package words
 
 import (
+	"bytes"
 	"strings"
 
 	"github.com/wmentor/lemmas/engine/forms"
@@ -20,7 +21,7 @@ func New(str string) *Word {
 	}
 
 	for _, fl := range strings.Fields(str) {
-		if f := forms.New(fl); f != nil {
+		if f := forms.New(strings.ToLower(fl)); f != nil {
 			w.Forms = append(w.Forms, f)
 			w.Opts = w.Opts & f.Opts
 		}
@@ -44,4 +45,17 @@ func (w *Word) String() string {
 	}
 
 	return maker.String()
+}
+
+func (w *Word) Bytes() []byte {
+	maker := bytes.NewBuffer(nil)
+
+	for i, f := range w.Forms {
+		if i > 0 {
+			maker.WriteRune(' ')
+		}
+		maker.WriteString(f.String())
+	}
+
+	return maker.Bytes()
 }

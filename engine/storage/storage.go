@@ -1,115 +1,100 @@
 package storage
 
 import (
-	"bufio"
-	"io/ioutil"
-	"os"
+	"bytes"
 	"strconv"
 	"strings"
 	"sync"
 
-	"github.com/wmentor/log"
+	"github.com/wmentor/kv"
+	"github.com/wmentor/lemmas/engine/words"
 )
 
 var (
 	mt sync.RWMutex
 
-	nextId   int64
-	formsIdx map[string]string
-	wordsIdx map[string]string
-
-	dir string
+	idCnt []byte = []byte{0}
 )
 
-func init() {
+func Open(db string) error {
 
-	dir = "."
-
-	nextId = 1
-	formsIdx = make(map[string]string)
-	wordsIdx = make(map[string]string)
-
-}
-
-func Open(db string) {
-
-	dir = db
-
-}
-
-func loadNextId(dir string) int64 {
-
-	filename := dir + "/nextid.txt"
-
-	if data, err := ioutil.ReadFile(filename); err != nil {
-		log.Errorf("load %s failed: %s", filename, err.Error())
-		return 1
-	} else {
-		if nid, _ := strconv.ParseInt(string(data), 16, 64); nid > 0 {
-			return nid
-		}
+	if _, err := kv.Open("global=1 path=" + db); err != nil {
+		return err
 	}
 
-	return 1
+	return nil
 }
 
-func loadForms(dir string) map[string]string {
+func Close() {
+	kv.Close()
+}
 
-	res := make(map[string]string)
+func nextId() int64 {
+	mt.Lock()
+	defer mt.Unlock()
 
-	filename := dir + "/forms.txt"
+	val := kv.Get(idCnt)
 
-	if rh, err := os.Open(filename); err == nil {
-		defer rh.Close()
-
-		br := bufio.NewReader(rh)
-
-		for {
-			str, err := br.ReadString('\n')
-			if err != nil && str == "" {
-				break
-			}
-
-			if str = strings.TrimSpace(str); len(str) > 0 {
-				if idx := strings.IndexRune(str, '|'); idx > 0 {
-					res[str[:idx]] = str[idx+1:]
-				}
-			}
-		}
-
-	} else {
-		log.Errorf("load %s failed: %s", filename, err.Error())
+	id, _ := strconv.ParseInt(string(val), 10, 64)
+	if id == 0 {
+		id = 1
 	}
 
-	return res
+	kv.Set(idCnt, []byte(strconv.FormatInt(id+1, 10)))
+
+	return id
 }
 
-func loadWords(dir string) map[string]string {
-	res := make(map[string]string)
+func formToKey(form string) []byte {
+	buf := bytes.NewBuffer(nil)
+	buf.WriteByte(1)
+	buf.WriteString(form)
+	return buf.Bytes()
+}
 
-	filename := dir + "/words.txt"
+func wordIdToKey(wid int64) []byte {
+	buf := bytes.NewBuffer(nil)
+	buf.WriteByte(2)
+	buf.WriteString(strconv.FormatInt(wid, 10))
+	return buf.Bytes()
+}
 
-	if rh, err := os.Open(filename); err == nil {
-		defer rh.Close()
+func addForm(form string, wordId int64) {
 
-		br := bufio.NewReader(rh)
+	key := formToKey(form)
+	wIdStr := strconv.FormatInt(wordId, 10)
 
-		for {
-			str, err := br.ReadString('\n')
-			if err != nil && str == "" {
-				break
-			}
+	val := kv.Get(key)
 
-			if str = strings.TrimSpace(str); len(str) > 0 {
-				if idx := strings.IndexRune(str, '|'); idx > 0 {
-					res[str[:idx]] = str[idx+1:]
-				}
+	if len(val) > 0 {
+		for _, ws := range strings.Fields(string(val)) {
+			if ws == wIdStr {
+				return
 			}
 		}
 
+		buf := bytes.NewBuffer(nil)
+
+		buf.Write(val)
+		buf.WriteByte(' ')
+		buf.WriteString(wIdStr)
+
+		kv.Set(key, buf.Bytes())
+
 	} else {
-		log.Errorf("load %s failed: %s", filename, err.Error())
+		kv.Set(key, []byte(wIdStr))
 	}
 
-	return res
+}
+
+func AddWord(wstr string) {
+	if w := words.New(wstr); w != nil {
+		wid := nextId()
+		key := wordIdToKey(wid)
+		kv.Set(key, w.Bytes())
+
+		for _, f := range w.Forms {
+			addForm(f.Name, wid)
+		}
+	}
 }
