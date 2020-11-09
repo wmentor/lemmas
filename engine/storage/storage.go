@@ -10,6 +10,11 @@ import (
 	"github.com/wmentor/lemmas/engine/words"
 )
 
+type FindResult struct {
+	Form  string
+	Words []*words.Word
+}
+
 var (
 	mt sync.RWMutex
 
@@ -87,14 +92,86 @@ func addForm(form string, wordId int64) {
 
 }
 
-func AddWord(wstr string) {
+func delForm(form string, wordId int64) {
+
+	key := formToKey(form)
+	wIdStr := strconv.FormatInt(wordId, 10)
+
+	if val := kv.Get(key); len(val) > 0 {
+
+		buf := bytes.NewBuffer(nil)
+		j := 0
+
+		for _, ids := range strings.Fields(string(val)) {
+			if ids != wIdStr {
+				if j > 0 {
+					buf.WriteRune(' ')
+				}
+				buf.WriteString(ids)
+				j++
+			}
+		}
+
+		if j > 0 {
+			kv.Set(key, buf.Bytes())
+		} else {
+			kv.Set(key, nil)
+		}
+	}
+}
+
+func AddWord(wstr string) int64 {
 	if w := words.New(wstr); w != nil {
 		wid := nextId()
+
+		mt.Lock()
+		defer mt.Unlock()
+
 		key := wordIdToKey(wid)
 		kv.Set(key, w.Bytes())
 
 		for _, f := range w.Forms {
 			addForm(f.Name, wid)
 		}
+
+		return wid
 	}
+
+	return 0
+}
+
+func GetWord(wid int64) *words.Word {
+	if data := kv.Get(wordIdToKey(wid)); len(data) > 0 {
+		return words.New(string(data))
+	}
+	return nil
+}
+
+func DelWord(wid int64) {
+	mt.Lock()
+	defer mt.Unlock()
+
+	if w := GetWord(wid); w != nil {
+		kv.Set(wordIdToKey(wid), nil)
+
+		for _, f := range w.Forms {
+			delForm(f.Name, wid)
+		}
+	}
+}
+
+func Find(form string) *FindResult {
+	fr := &FindResult{Form: form}
+	key := formToKey(form)
+	data := kv.Get(key)
+	if len(data) > 0 {
+		for _, id := range strings.Fields(string(data)) {
+			if wid, _ := strconv.ParseInt(id, 10, 64); wid > 0 {
+				if w := GetWord(wid); w != nil {
+					fr.Words = append(fr.Words, w)
+				}
+			}
+		}
+	}
+	return fr
 }
