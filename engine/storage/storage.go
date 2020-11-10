@@ -30,13 +30,15 @@ func Open(db string) error {
 	return nil
 }
 
+func TestOpen() {
+	kv.Open("test=1")
+}
+
 func Close() {
 	kv.Close()
 }
 
 func nextId() int64 {
-	mt.Lock()
-	defer mt.Unlock()
 
 	val := kv.Get(idCnt)
 
@@ -122,10 +124,11 @@ func delForm(form string, wordId int64) {
 
 func AddWord(wstr string) int64 {
 	if w := words.New(wstr); w != nil {
-		wid := nextId()
 
 		mt.Lock()
 		defer mt.Unlock()
+
+		wid := nextId()
 
 		key := wordIdToKey(wid)
 		kv.Set(key, w.Bytes())
@@ -140,7 +143,7 @@ func AddWord(wstr string) int64 {
 	return 0
 }
 
-func GetWord(wid int64) *words.Word {
+func getWord(wid int64) *words.Word {
 	if data := kv.Get(wordIdToKey(wid)); len(data) > 0 {
 		return words.New(string(data))
 	}
@@ -151,7 +154,7 @@ func DelWord(wid int64) {
 	mt.Lock()
 	defer mt.Unlock()
 
-	if w := GetWord(wid); w != nil {
+	if w := getWord(wid); w != nil {
 		kv.Set(wordIdToKey(wid), nil)
 
 		for _, f := range w.Forms {
@@ -161,13 +164,17 @@ func DelWord(wid int64) {
 }
 
 func Find(form string) *FindResult {
+
+	mt.RLock()
+	defer mt.RUnlock()
+
 	fr := &FindResult{Form: form}
 	key := formToKey(form)
 	data := kv.Get(key)
 	if len(data) > 0 {
 		for _, id := range strings.Fields(string(data)) {
 			if wid, _ := strconv.ParseInt(id, 10, 64); wid > 0 {
-				if w := GetWord(wid); w != nil {
+				if w := getWord(wid); w != nil {
 					fr.Words = append(fr.Words, w)
 				}
 			}

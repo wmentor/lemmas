@@ -2,13 +2,11 @@ package storage
 
 import (
 	"testing"
-
-	"github.com/wmentor/kv"
 )
 
 func TestStorage(t *testing.T) {
 
-	kv.Open("test=1")
+	TestOpen()
 	defer Close()
 
 	for i := int64(1); i < 100; i++ {
@@ -26,7 +24,7 @@ func TestStorage(t *testing.T) {
 		t.Fatalf("AddWord must return 0")
 	}
 
-	w := GetWord(wid)
+	w := getWord(wid)
 	if w == nil {
 		t.Fatalf("GetWord failed")
 	}
@@ -55,7 +53,7 @@ func TestStorage(t *testing.T) {
 
 	DelWord(wid)
 
-	if GetWord(wid) != nil {
+	if getWord(wid) != nil {
 		t.Fatalf("GetWord must return nil")
 	}
 }

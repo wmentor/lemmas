@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/wmentor/lemmas/lemma"
+	"github.com/wmentor/lemmas/engine/storage"
 	"github.com/wmentor/log"
 	"github.com/wmentor/serv"
 
@@ -22,7 +22,7 @@ func main() {
 
 	log.Open("name=lemmas path=./log period=day level=info keep=15 stderr=1")
 
-	lemma.Open(dataDir)
+	storage.Open(dataDir)
 
 	serv.SetLogger(func(l *serv.LogData) {
 		log.Infof("%s %s %d %s %.3fs", l.Addr, l.Method, l.StatusCode, l.RequestURL, l.Seconds)
