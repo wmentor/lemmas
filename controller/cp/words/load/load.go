@@ -2,6 +2,7 @@ package load
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/wmentor/lemmas/engine"
 	"github.com/wmentor/serv"
@@ -9,12 +10,13 @@ import (
 
 func init() {
 	serv.Register("GET", "/cp/words/load", handler)
+	serv.Register("POST", "/cp/words/load", handler)
 }
 
 func handler(c *serv.Context) {
 
 	if c.Method() == "POST" {
-		engine.LoadWords(c.Body())
+		engine.LoadWords(strings.NewReader(c.FormValue("data")))
 	}
 
 	c.SetContentType("text/html; charset=utf-8")
