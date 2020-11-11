@@ -1,0 +1,2 @@
+test|test:en.noun.sg test:en.noun.sg
+tests|test:en.noun.sg tests:en.noun.mg

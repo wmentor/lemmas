@@ -19,7 +19,7 @@ func LoadWords(in io.Reader) {
 		}
 
 		if str = strings.TrimSpace(str); len(str) > 0 {
-			storage.AddWord(str)
+			storage.WordAdd(str)
 		}
 	}
 }

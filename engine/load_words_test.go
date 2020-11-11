@@ -4,12 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/wmentor/lemmas/engine/storage"
 )
 
 func TestLoadWords(t *testing.T) {
-
-	storage.TestOpen()
 
 	data := `
 test:en.noun.sg tests:en.noun.mg
@@ -19,8 +16,4 @@ test:en.noun.sg tests:en.noun.mg
 
 	LoadWords(strings.NewReader(data))
 
-	fr := storage.Find("тестов")
-	if len(fr.Words) != 1 {
-		t.Fatalf("Find failed for: %s", "тестов")
-	}
 }

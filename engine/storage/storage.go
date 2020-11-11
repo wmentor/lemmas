@@ -1,12 +1,13 @@
 package storage
 
 import (
+	"bufio"
 	"bytes"
-	"strconv"
+	"io"
 	"strings"
 	"sync"
 
-	"github.com/wmentor/kv"
+	"github.com/wmentor/lemmas/engine/forms"
 	"github.com/wmentor/lemmas/engine/words"
 )
 
@@ -18,167 +19,119 @@ type FindResult struct {
 var (
 	mt sync.RWMutex
 
-	idCnt []byte = []byte{0}
+	formsData map[string]string
 )
 
-func Open(db string) error {
+func init() {
+	formsData = make(map[string]string)
+}
 
-	if _, err := kv.Open("global=1 path=" + db); err != nil {
-		return err
+func formAdd(f *forms.Form, baseForm *forms.Form) {
+
+	curData := formsData[f.Name]
+
+	maker := strings.Builder{}
+
+	if len(curData) > 0 {
+		maker.WriteString(curData)
+		maker.WriteRune('|')
 	}
 
-	return nil
+	maker.WriteString(baseForm.String())
+	maker.WriteRune(' ')
+	maker.WriteString(f.String())
+
+	formsData[f.Name] = maker.String()
 }
 
-func TestOpen() {
-	kv.Open("test=1")
-}
+func WordAdd(wstr string) bool {
 
-func Close() {
-	kv.Close()
-}
-
-func nextId() int64 {
-
-	val := kv.Get(idCnt)
-
-	id, _ := strconv.ParseInt(string(val), 10, 64)
-	if id == 0 {
-		id = 1
-	}
-
-	kv.Set(idCnt, []byte(strconv.FormatInt(id+1, 10)))
-
-	return id
-}
-
-func formToKey(form string) []byte {
-	buf := bytes.NewBuffer(nil)
-	buf.WriteByte(1)
-	buf.WriteString(form)
-	return buf.Bytes()
-}
-
-func wordIdToKey(wid int64) []byte {
-	buf := bytes.NewBuffer(nil)
-	buf.WriteByte(2)
-	buf.WriteString(strconv.FormatInt(wid, 10))
-	return buf.Bytes()
-}
-
-func addForm(form string, wordId int64) {
-
-	key := formToKey(form)
-	wIdStr := strconv.FormatInt(wordId, 10)
-
-	val := kv.Get(key)
-
-	if len(val) > 0 {
-		for _, ws := range strings.Fields(string(val)) {
-			if ws == wIdStr {
-				return
-			}
-		}
-
-		buf := bytes.NewBuffer(nil)
-
-		buf.Write(val)
-		buf.WriteByte(' ')
-		buf.WriteString(wIdStr)
-
-		kv.Set(key, buf.Bytes())
-
-	} else {
-		kv.Set(key, []byte(wIdStr))
-	}
-
-}
-
-func delForm(form string, wordId int64) {
-
-	key := formToKey(form)
-	wIdStr := strconv.FormatInt(wordId, 10)
-
-	if val := kv.Get(key); len(val) > 0 {
-
-		buf := bytes.NewBuffer(nil)
-		j := 0
-
-		for _, ids := range strings.Fields(string(val)) {
-			if ids != wIdStr {
-				if j > 0 {
-					buf.WriteRune(' ')
-				}
-				buf.WriteString(ids)
-				j++
-			}
-		}
-
-		if j > 0 {
-			kv.Set(key, buf.Bytes())
-		} else {
-			kv.Set(key, nil)
-		}
-	}
-}
-
-func AddWord(wstr string) int64 {
 	if w := words.New(wstr); w != nil {
 
 		mt.Lock()
 		defer mt.Unlock()
 
-		wid := nextId()
-
-		key := wordIdToKey(wid)
-		kv.Set(key, w.Bytes())
-
 		for _, f := range w.Forms {
-			addForm(f.Name, wid)
+			formAdd(f, w.Forms[0])
 		}
 
-		return wid
+		return true
 	}
 
-	return 0
+	return false
 }
 
-func getWord(wid int64) *words.Word {
-	if data := kv.Get(wordIdToKey(wid)); len(data) > 0 {
-		return words.New(string(data))
+func FormsLoad(in io.Reader) {
+	br := bufio.NewReader(in)
+
+	res := make(map[string]string)
+
+	for {
+		str, err := br.ReadString('\n')
+		if err != nil && str == "" {
+			break
+		}
+
+		if str = strings.TrimSpace(str); str != "" {
+			if idx := strings.IndexByte(str, '|'); idx > 0 {
+				res[str[:idx]] = str[idx+1:]
+			}
+		}
 	}
-	return nil
-}
 
-func DelWord(wid int64) {
 	mt.Lock()
 	defer mt.Unlock()
 
-	if w := getWord(wid); w != nil {
-		kv.Set(wordIdToKey(wid), nil)
+	formsData = res
+}
 
-		for _, f := range w.Forms {
-			delForm(f.Name, wid)
+func FormsSave(out io.Writer) {
+
+	mt.RLock()
+	mt.RUnlock()
+
+	buf := bytes.NewBuffer(nil)
+
+	for f, data := range formsData {
+		if data != "" {
+			buf.WriteString(f)
+			buf.WriteByte('|')
+			buf.WriteString(data)
+			buf.WriteByte('\n')
+			out.Write(buf.Bytes())
+			buf.Reset()
 		}
 	}
 }
 
-func Find(form string) *FindResult {
+func FormHas(f string) bool {
+	mt.RLock()
+	defer mt.RUnlock()
+
+	_, has := formsData[f]
+	return has
+}
+
+func EachWord(f string, fn func(w *words.Word) bool) {
 
 	mt.RLock()
 	defer mt.RUnlock()
 
-	fr := &FindResult{Form: form}
-	key := formToKey(form)
-	data := kv.Get(key)
-	if len(data) > 0 {
-		for _, id := range strings.Fields(string(data)) {
-			if wid, _ := strconv.ParseInt(id, 10, 64); wid > 0 {
-				if w := getWord(wid); w != nil {
-					fr.Words = append(fr.Words, w)
+	if data, has := formsData[f]; has {
+		for {
+			if idx := strings.IndexByte(data, '|'); idx > 0 {
+				if w := words.New(data[:idx]); w != nil {
+					if !fn(w) {
+						break
+					}
 				}
+				data = data[idx+1:]
+			} else {
+				if w := words.New(data); w != nil {
+					fn(w)
+				}
+				break
 			}
 		}
 	}
-	return fr
 }
