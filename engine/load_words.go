@@ -10,16 +10,20 @@ import (
 
 func LoadWords(in io.Reader) {
 
-	br := bufio.NewReader(in)
+	writeAccess(func() {
 
-	for {
-		str, err := br.ReadString('\n')
-		if err != nil && str == "" {
-			break
+		br := bufio.NewReader(in)
+
+		for {
+			str, err := br.ReadString('\n')
+			if err != nil && str == "" {
+				break
+			}
+
+			if str = strings.TrimSpace(str); len(str) > 0 {
+				storage.WordAdd(str)
+			}
 		}
 
-		if str = strings.TrimSpace(str); len(str) > 0 {
-			storage.WordAdd(str)
-		}
-	}
+	})
 }

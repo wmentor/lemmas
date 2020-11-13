@@ -28,33 +28,42 @@ func Open(dir string) {
 	formsFile = dataDir + "/forms.txt"
 	parentsFile = dataDir + "/parents.txt"
 
-	if rh, err := os.Open(formsFile); err == nil {
-		defer rh.Close()
-		storage.FormsLoad(rh)
-	} else {
-		log.Errorf("read file %s error: %s", formsFile, err.Error())
-	}
+	writeAccess(func() {
 
-	if rh, err := os.Open(parentsFile); err == nil {
-		defer rh.Close()
-		storage.ParentsLoad(rh)
-	} else {
-		log.Errorf("read file %s error: %s", parentsFile, err.Error())
-	}
+		if rh, err := os.Open(formsFile); err == nil {
+			defer rh.Close()
+			storage.FormsLoad(rh)
+		} else {
+			log.Errorf("read file %s error: %s", formsFile, err.Error())
+		}
+
+		if rh, err := os.Open(parentsFile); err == nil {
+			defer rh.Close()
+			storage.ParentsLoad(rh)
+		} else {
+			log.Errorf("read file %s error: %s", parentsFile, err.Error())
+		}
+
+	})
 }
 
 func Save() {
-	if wh, err := os.Create(formsFile); err == nil {
-		defer wh.Close()
-		storage.FormsSave(wh)
-	} else {
-		log.Errorf("write file %s error: %s", formsFile, err.Error())
-	}
 
-	if wh, err := os.Create(parentsFile); err == nil {
-		defer wh.Close()
-		storage.ParentsSave(wh)
-	} else {
-		log.Errorf("write file %s error: %s", parentsFile, err.Error())
-	}
+	readAccess(func() {
+
+		if wh, err := os.Create(formsFile); err == nil {
+			defer wh.Close()
+			storage.FormsSave(wh)
+		} else {
+			log.Errorf("write file %s error: %s", formsFile, err.Error())
+		}
+
+		if wh, err := os.Create(parentsFile); err == nil {
+			defer wh.Close()
+			storage.ParentsSave(wh)
+		} else {
+			log.Errorf("write file %s error: %s", parentsFile, err.Error())
+		}
+
+	})
 }
