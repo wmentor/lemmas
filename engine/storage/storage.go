@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"io"
 	"strings"
-	"sync"
 
 	"github.com/wmentor/lemmas/engine/forms"
 	"github.com/wmentor/lemmas/engine/words"
@@ -17,8 +16,6 @@ type FindResult struct {
 }
 
 var (
-	mt sync.RWMutex
-
 	formsData   map[string]string
 	parentsData map[string]string
 )
@@ -73,7 +70,7 @@ func ParentAdd(txt string) {
 
 	list := strings.Split(strings.ToLower(txt), ">")
 
-	if len(list) > 2 {
+	if len(list) >= 2 {
 
 		src := ""
 
@@ -96,9 +93,6 @@ func ParentAdd(txt string) {
 func WordAdd(wstr string) bool {
 
 	if w := words.New(wstr); w != nil {
-
-		mt.Lock()
-		defer mt.Unlock()
 
 		for _, f := range w.Forms {
 			formAdd(f, w.Forms[0])
@@ -128,9 +122,6 @@ func FormsLoad(in io.Reader) {
 		}
 	}
 
-	mt.Lock()
-	defer mt.Unlock()
-
 	formsData = res
 }
 
@@ -152,16 +143,10 @@ func ParentsLoad(in io.Reader) {
 		}
 	}
 
-	mt.Lock()
-	defer mt.Unlock()
-
 	parentsData = res
 }
 
 func FormsSave(out io.Writer) {
-
-	mt.RLock()
-	mt.RUnlock()
 
 	buf := bytes.NewBuffer(nil)
 
@@ -179,9 +164,6 @@ func FormsSave(out io.Writer) {
 
 func ParentsSave(out io.Writer) {
 
-	mt.RLock()
-	mt.RUnlock()
-
 	buf := bytes.NewBuffer(nil)
 
 	for ps, pd := range parentsData {
@@ -197,17 +179,11 @@ func ParentsSave(out io.Writer) {
 }
 
 func FormHas(f string) bool {
-	mt.RLock()
-	defer mt.RUnlock()
-
 	_, has := formsData[f]
 	return has
 }
 
 func EachWord(f string, fn func(w *words.Word) bool) {
-
-	mt.RLock()
-	defer mt.RUnlock()
 
 	if data, has := formsData[f]; has {
 		for {
@@ -226,4 +202,56 @@ func EachWord(f string, fn func(w *words.Word) bool) {
 			}
 		}
 	}
+}
+
+func FirstParents(f string, fn func(parent string) bool) {
+
+	if data, has := parentsData[f]; has {
+
+		for {
+
+			if idx := strings.IndexByte(data, '|'); idx > 0 {
+
+				if !fn(data[:idx]) {
+					return
+				}
+
+				data = data[idx+1:]
+
+			} else {
+				fn(data)
+				return
+			}
+		}
+	}
+}
+
+func FullChain(f string, fn func(parent string) bool) {
+
+	known := map[string]bool{f: true}
+
+	list := []string{f}
+
+	for {
+
+		if len(list) == 0 {
+			return
+		}
+
+		cf := list[0]
+		list = list[1:]
+
+		if !fn(cf) {
+			return
+		}
+
+		FirstParents(cf, func(p string) bool {
+			if !known[p] {
+				list = append(list, p)
+				known[p] = true
+			}
+			return true
+		})
+	}
+
 }
