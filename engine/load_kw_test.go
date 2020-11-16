@@ -12,6 +12,6 @@ func TestLoadParents(t *testing.T) {
 покер > азертная игра > игра
 `
 
-	LoadWords(strings.NewReader(data))
+	LoadKeywords(strings.NewReader(data))
 
 }

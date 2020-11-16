@@ -1,4 +1,4 @@
-package parents
+package keywords
 
 import (
 	"net/http"
@@ -16,7 +16,7 @@ func init() {
 func handler(c *serv.Context) {
 
 	if c.Method() == "POST" {
-		engine.LoadParents(strings.NewReader(c.FormValue("data")))
+		engine.LoadKeywords(strings.NewReader(c.FormValue("data")))
 	}
 
 	c.SetContentType("text/html; charset=utf-8")

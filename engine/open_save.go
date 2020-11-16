@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	dataDir     string
-	formsFile   string
-	parentsFile string
+	dataDir   string
+	formsFile string
+	kwFile    string
 )
 
 func Open(dir string) {
@@ -26,7 +26,7 @@ func Open(dir string) {
 	dataDir = dir
 
 	formsFile = dataDir + "/forms.txt"
-	parentsFile = dataDir + "/parents.txt"
+	kwFile = dataDir + "/keywords.txt"
 
 	writeAccess(func() {
 
@@ -37,11 +37,11 @@ func Open(dir string) {
 			log.Errorf("read file %s error: %s", formsFile, err.Error())
 		}
 
-		if rh, err := os.Open(parentsFile); err == nil {
+		if rh, err := os.Open(kwFile); err == nil {
 			defer rh.Close()
-			storage.ParentsLoad(rh)
+			storage.KeywordsLoad(rh)
 		} else {
-			log.Errorf("read file %s error: %s", parentsFile, err.Error())
+			log.Errorf("read file %s error: %s", kwFile, err.Error())
 		}
 
 	})
@@ -58,11 +58,11 @@ func Save() {
 			log.Errorf("write file %s error: %s", formsFile, err.Error())
 		}
 
-		if wh, err := os.Create(parentsFile); err == nil {
+		if wh, err := os.Create(kwFile); err == nil {
 			defer wh.Close()
-			storage.ParentsSave(wh)
+			storage.KeywordsSave(wh)
 		} else {
-			log.Errorf("write file %s error: %s", parentsFile, err.Error())
+			log.Errorf("write file %s error: %s", kwFile, err.Error())
 		}
 
 	})

@@ -8,7 +8,7 @@ import (
 	"github.com/wmentor/lemmas/engine/storage"
 )
 
-func LoadParents(in io.Reader) {
+func LoadKeywords(in io.Reader) {
 
 	writeAccess(func() {
 
@@ -21,7 +21,7 @@ func LoadParents(in io.Reader) {
 			}
 
 			if str = strings.TrimSpace(str); len(str) > 0 {
-				storage.ParentAdd(str)
+				storage.KeywordAdd(str)
 			}
 		}
 

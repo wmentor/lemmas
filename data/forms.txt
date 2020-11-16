@@ -1,16 +1,16 @@
 михаилу|михаил:ru.noun.sg.mr.ip.fn михаилу:ru.noun.sg.mr.dp.fn
-кириллову|кириллов:ru.noun.sg.mr.ip.ln кириллову:ru.noun.sg.mr.dp.ln|кириллова:ru.noun.sg.gr.ip.ln кириллову:ru.noun.sg.gr.vp.ln
 кириллове|кириллов:ru.noun.sg.mr.ip.ln кириллове:ru.noun.sg.mr.pp.ln
-кирилловой|кириллова:ru.noun.sg.gr.ip.ln кирилловой:ru.noun.sg.gr.rp.dp.tp.pp.ln
-кирилловых|кирилловы:ru.noun.mg.ip.ln кирилловых:ru.noun.mg.rp.vp.pp.ln
 кирилловыми|кирилловы:ru.noun.mg.ip.ln кирилловыми:ru.noun.mg.tp.ln
-михаил|михаил:ru.noun.sg.mr.ip.fn михаил:ru.noun.sg.mr.ip.fn
-кириллов|кириллов:ru.noun.sg.mr.ip.ln кириллов:ru.noun.sg.mr.ip.ln
-михаила|михаил:ru.noun.sg.mr.ip.fn михаила:ru.noun.sg.mr.rp.vp.fn
-кириллова|кириллов:ru.noun.sg.mr.ip.ln кириллова:ru.noun.sg.mr.rp.vp.ln|кириллова:ru.noun.sg.gr.ip.ln кириллова:ru.noun.sg.gr.ip.ln
-кирилловы|кирилловы:ru.noun.mg.ip.ln кирилловы:ru.noun.mg.ip.ln
 test|test:en.noun.sg test:en.noun.sg
-tests|test:en.noun.sg tests:en.noun.mg
+кирилловым|кириллов:ru.noun.sg.mr.ip.ln кирилловым:ru.noun.sg.mr.ip.tp.ln|кирилловы:ru.noun.mg.ip.ln кирилловым:ru.noun.mg.dp.ln
+кирилловых|кирилловы:ru.noun.mg.ip.ln кирилловых:ru.noun.mg.rp.vp.pp.ln
+кириллов|кириллов:ru.noun.sg.mr.ip.ln кириллов:ru.noun.sg.mr.ip.ln
+кириллова|кириллов:ru.noun.sg.mr.ip.ln кириллова:ru.noun.sg.mr.rp.vp.ln|кириллова:ru.noun.sg.gr.ip.ln кириллова:ru.noun.sg.gr.ip.ln
 михаилом|михаил:ru.noun.sg.mr.ip.fn михаилом:ru.noun.sg.mr.tp.fn
 михаиле|михаил:ru.noun.sg.mr.ip.fn михаиле:ru.noun.sg.mr.pp.fn
-кирилловым|кириллов:ru.noun.sg.mr.ip.ln кирилловым:ru.noun.sg.mr.ip.tp.ln|кирилловы:ru.noun.mg.ip.ln кирилловым:ru.noun.mg.dp.ln
+кирилловой|кириллова:ru.noun.sg.gr.ip.ln кирилловой:ru.noun.sg.gr.rp.dp.tp.pp.ln
+михаила|михаил:ru.noun.sg.mr.ip.fn михаила:ru.noun.sg.mr.rp.vp.fn
+кириллову|кириллов:ru.noun.sg.mr.ip.ln кириллову:ru.noun.sg.mr.dp.ln|кириллова:ru.noun.sg.gr.ip.ln кириллову:ru.noun.sg.gr.vp.ln
+михаил|михаил:ru.noun.sg.mr.ip.fn михаил:ru.noun.sg.mr.ip.fn
+кирилловы|кирилловы:ru.noun.mg.ip.ln кирилловы:ru.noun.mg.ip.ln
+tests|test:en.noun.sg tests:en.noun.mg
