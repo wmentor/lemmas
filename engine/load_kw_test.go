@@ -8,8 +8,9 @@ import (
 func TestLoadParents(t *testing.T) {
 
 	data := `
-пушкин > поэт > человек
-покер > азертная игра > игра
+пушкин
+покер
+игра
 `
 
 	LoadKeywords(strings.NewReader(data))
