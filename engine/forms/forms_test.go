@@ -1,21 +1,54 @@
 package forms
 
 import (
+	"bytes"
+	"strings"
 	"testing"
 )
 
 func TestForms(t *testing.T) {
+	Reset()
 
-	tF := func(txt string) {
-		f := New(txt)
-		if f == nil {
-			t.Fatalf("New failed for: %s", txt)
-		}
+	txt := `
+	тест тест
+	теста тест тесто
+	тесту тест тесто
+	тестом тест тесто
+	тесте тест тесто
+	театр театр
+	театра театр
+	театру театр
+	театром театр
+	театре театр
+	`
 
-		if f.String() != txt {
-			t.Fatalf("String failed for: %s", txt)
+	Load(strings.NewReader(txt))
+
+	tHas := func(f string, wait bool) {
+		if Has(f) != wait {
+			t.Fatalf("Has failed for: %s", f)
 		}
 	}
 
-	tF("тест:ru.noun.sg.mr.ip")
+	tHas("теста", true)
+	tHas("театр", true)
+	tHas(")))!231", false)
+
+	buf := bytes.NewBuffer(nil)
+
+	Save(buf)
+
+	if buf.String() != `театр театр
+театра театр
+театре театр
+театром театр
+театру театр
+тест тест
+теста тест тесто
+тесте тест тесто
+тестом тест тесто
+тесту тест тесто
+` {
+		t.Fatal("Save failed")
+	}
 }
