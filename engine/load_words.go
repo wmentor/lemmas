@@ -5,7 +5,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/wmentor/lemmas/engine/storage"
+	"github.com/wmentor/lemmas/engine/forms"
 )
 
 func LoadWords(in io.Reader) {
@@ -21,7 +21,7 @@ func LoadWords(in io.Reader) {
 			}
 
 			if str = strings.TrimSpace(str); len(str) > 0 {
-				storage.WordAdd(str)
+				forms.AddWord(str)
 			}
 		}
 

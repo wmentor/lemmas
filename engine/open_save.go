@@ -3,14 +3,15 @@ package engine
 import (
 	"os"
 
-	"github.com/wmentor/lemmas/engine/storage"
+	"github.com/wmentor/lemmas/engine/forms"
+	"github.com/wmentor/lemmas/engine/meta"
 	"github.com/wmentor/log"
 )
 
 var (
 	dataDir   string
 	formsFile string
-	kwFile    string
+	metaFile  string
 )
 
 func Open(dir string) {
@@ -26,22 +27,24 @@ func Open(dir string) {
 	dataDir = dir
 
 	formsFile = dataDir + "/forms.txt"
-	kwFile = dataDir + "/keywords.txt"
+	metaFile = dataDir + "/meta.txt"
 
 	writeAccess(func() {
 
 		if rh, err := os.Open(formsFile); err == nil {
 			defer rh.Close()
-			storage.FormsLoad(rh)
+			forms.Reset()
+			forms.Load(rh)
 		} else {
 			log.Errorf("read file %s error: %s", formsFile, err.Error())
 		}
 
-		if rh, err := os.Open(kwFile); err == nil {
+		if rh, err := os.Open(metaFile); err == nil {
 			defer rh.Close()
-			storage.KeywordsLoad(rh)
+			meta.Reset()
+			meta.Load(rh)
 		} else {
-			log.Errorf("read file %s error: %s", kwFile, err.Error())
+			log.Errorf("read file %s error: %s", metaFile, err.Error())
 		}
 
 	})
@@ -53,16 +56,16 @@ func Save() {
 
 		if wh, err := os.Create(formsFile); err == nil {
 			defer wh.Close()
-			storage.FormsSave(wh)
+			forms.Save(wh)
 		} else {
 			log.Errorf("write file %s error: %s", formsFile, err.Error())
 		}
 
-		if wh, err := os.Create(kwFile); err == nil {
+		if wh, err := os.Create(metaFile); err == nil {
 			defer wh.Close()
-			storage.KeywordsSave(wh)
+			meta.Save(wh)
 		} else {
-			log.Errorf("write file %s error: %s", kwFile, err.Error())
+			log.Errorf("write file %s error: %s", metaFile, err.Error())
 		}
 
 	})

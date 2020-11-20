@@ -30,15 +30,23 @@ func TestForms(t *testing.T) {
 		}
 	}
 
+	AddWord("огонь огня огню огонь огнем огне")
+
 	tHas("теста", true)
 	tHas("театр", true)
+	tHas("огню", true)
 	tHas(")))!231", false)
 
 	buf := bytes.NewBuffer(nil)
 
 	Save(buf)
 
-	if buf.String() != `театр театр
+	if buf.String() != `огне огонь
+огнем огонь
+огню огонь
+огня огонь
+огонь огонь
+театр театр
 театра театр
 театре театр
 театром театр
