@@ -5,10 +5,10 @@ import (
 	"io"
 	"strings"
 
-	"github.com/wmentor/lemmas/engine/forms"
+	"github.com/wmentor/lemmas/engine/meta"
 )
 
-func LoadWords(in io.Reader) {
+func LoadMeta(in io.Reader) {
 
 	writeAccess(func() {
 
@@ -21,11 +21,10 @@ func LoadWords(in io.Reader) {
 			}
 
 			if str = strings.TrimSpace(str); len(str) > 0 {
-				forms.AddWord(str)
+				meta.Add(str)
 			}
 		}
 
 		needSave = true
-
 	})
 }

@@ -16,7 +16,8 @@ func init() {
 func handler(c *serv.Context) {
 
 	if c.Method() == "POST" {
-		engine.LoadWords(strings.NewReader(c.FormValue("data")))
+		engine.LoadWords(strings.NewReader(c.FormValue("words")))
+		engine.LoadMeta(strings.NewReader(c.FormValue("meta")))
 	}
 
 	c.SetContentType("text/html; charset=utf-8")
