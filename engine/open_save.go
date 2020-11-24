@@ -2,6 +2,7 @@ package engine
 
 import (
 	"os"
+	"time"
 
 	"github.com/wmentor/lemmas/engine/forms"
 	"github.com/wmentor/lemmas/engine/meta"
@@ -12,7 +13,12 @@ var (
 	dataDir   string
 	formsFile string
 	metaFile  string
+	needSave  bool
 )
+
+func init() {
+	go monitor()
+}
 
 func Open(dir string) {
 
@@ -69,4 +75,17 @@ func Save() {
 		}
 
 	})
+}
+
+func monitor() {
+
+	for {
+		time.Sleep(time.Minute)
+		if needSave {
+			needSave = true
+			Save()
+			log.Info("save data")
+		}
+	}
+
 }
