@@ -16,7 +16,7 @@ func init() {
 func handler(c *serv.Context) {
 
 	if c.Method() == "POST" {
-		engine.LoadWords(strings.NewReader(c.FormValue("words")))
+		engine.LoadWords(strings.NewReader(strings.ReplaceAll(c.FormValue("words"), ",", " ")))
 		engine.LoadMeta(strings.NewReader(c.FormValue("meta")))
 	}
 
