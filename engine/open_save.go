@@ -82,7 +82,7 @@ func monitor() {
 	for {
 		time.Sleep(time.Minute)
 		if needSave {
-			needSave = true
+			needSave = false
 			Save()
 			log.Info("save data")
 		}
