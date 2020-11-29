@@ -1,6 +1,8 @@
 package engine
 
 import (
+	"bufio"
+	"compress/gzip"
 	"os"
 	"time"
 
@@ -32,23 +34,38 @@ func Open(dir string) {
 
 	dataDir = dir
 
-	formsFile = dataDir + "/forms.txt"
-	metaFile = dataDir + "/meta.txt"
+	formsFile = dataDir + "/forms.txt.gz"
+	metaFile = dataDir + "/meta.txt.gz"
 
 	writeAccess(func() {
 
 		if rh, err := os.Open(formsFile); err == nil {
 			defer rh.Close()
-			forms.Reset()
-			forms.Load(rh)
+
+			br := bufio.NewReader(rh)
+
+			if gz, err := gzip.NewReader(br); err == nil {
+				forms.Reset()
+				forms.Load(gz)
+			} else {
+				log.Errorf("read file %s error: %s", formsFile, err.Error())
+			}
+
 		} else {
 			log.Errorf("read file %s error: %s", formsFile, err.Error())
 		}
 
 		if rh, err := os.Open(metaFile); err == nil {
 			defer rh.Close()
-			meta.Reset()
-			meta.Load(rh)
+
+			br := bufio.NewReader(rh)
+
+			if gz, err := gzip.NewReader(br); err == nil {
+				meta.Reset()
+				meta.Load(gz)
+			} else {
+				log.Errorf("read file %s error: %s", metaFile, err.Error())
+			}
 		} else {
 			log.Errorf("read file %s error: %s", metaFile, err.Error())
 		}
