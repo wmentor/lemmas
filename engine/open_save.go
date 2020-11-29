@@ -45,6 +45,7 @@ func Open(dir string) {
 			br := bufio.NewReader(rh)
 
 			if gz, err := gzip.NewReader(br); err == nil {
+				defer gz.Close()
 				forms.Reset()
 				forms.Load(gz)
 			} else {
@@ -61,6 +62,7 @@ func Open(dir string) {
 			br := bufio.NewReader(rh)
 
 			if gz, err := gzip.NewReader(br); err == nil {
+				defer gz.Close()
 				meta.Reset()
 				meta.Load(gz)
 			} else {
@@ -79,14 +81,21 @@ func Save() {
 
 		if wh, err := os.Create(formsFile); err == nil {
 			defer wh.Close()
-			forms.Save(wh)
+
+			gz := gzip.NewWriter(wh)
+			defer gz.Close()
+			forms.Save(gz)
+
 		} else {
 			log.Errorf("write file %s error: %s", formsFile, err.Error())
 		}
 
 		if wh, err := os.Create(metaFile); err == nil {
 			defer wh.Close()
-			meta.Save(wh)
+
+			gz := gzip.NewWriter(wh)
+			defer gz.Close()
+			meta.Save(gz)
 		} else {
 			log.Errorf("write file %s error: %s", metaFile, err.Error())
 		}
