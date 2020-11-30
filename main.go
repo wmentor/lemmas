@@ -33,6 +33,8 @@ func main() {
 	serv.Static("/fonts", "./htdocs/fonts")
 	serv.Static("/css", "./htdocs/css")
 
+	serv.File("/favicon.ico", "./htdocs/favicon.ico")
+
 	if err := serv.Start(addr); err != nil {
 		panic(err)
 	}
