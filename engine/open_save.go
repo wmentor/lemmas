@@ -34,8 +34,8 @@ func Open(dir string) {
 
 	dataDir = dir
 
-	formsFile = dataDir + "/forms.txt.gz"
-	metaFile = dataDir + "/meta.txt.gz"
+	formsFile = dataDir + "/forms.db"
+	metaFile = dataDir + "/meta.db"
 
 	writeAccess(func() {
 

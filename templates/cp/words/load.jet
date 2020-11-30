@@ -3,9 +3,7 @@
 <body>
 <form method="POST">
 Слова:<br/>
-<textarea name="words" rows="20" style="WIDTH:800px;"></textarea> <br/>
-Мета:<br/>
-<textarea name="meta" rows="20" style="WIDTH:800px;"></textarea> <br/>
+<textarea name="words" rows="30" style="WIDTH:800px;"></textarea> <br/>
 <input type="submit" value="ВВОД">
 </form>
 </body>
