@@ -30,6 +30,9 @@ func main() {
 
 	serv.LoadTemplates("./templates")
 
+	serv.Static("/fonts", "./htdocs/fonts")
+	serv.Static("/css", "./htdocs/css")
+
 	if err := serv.Start(addr); err != nil {
 		panic(err)
 	}
