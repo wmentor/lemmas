@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+{{ include "cp/head.jet" }}
+
+<body>
+
+<div class="container">
+
+<div class="logo"><a href="/">Lemmas</a></div>
+
+{{ include "cp/menu.jet" }}
+
+<div class="after_menu">&nbsp;</div>
+
+{{ yield body() }}
+
+</div>
+
+</body>
+</html>
