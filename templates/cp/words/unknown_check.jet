@@ -1,10 +1,11 @@
-<!DOCTYPE HTML>
-<html>
-<body>
+{{ extends "cp/base.jet" }}
+
+{{ block body() }}
+
 <form method="POST">
 Данные:<br/>
-<textarea name="data" rows="40" style="WIDTH:500px;"></textarea> <br/>
+<textarea name="data" rows="30" style="WIDTH:100%;"></textarea> <br/>
 <input type="submit" value="ВВОД">
 </form>
-</body>
-</html>
+
+{{ end }}

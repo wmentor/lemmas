@@ -130,6 +130,9 @@
   display: none;
 }
 
+.found {color: #444;}
+.unknown {color: #ccc;}
+
 figure {
   width:100%;
   margin-inline-start: 0px;

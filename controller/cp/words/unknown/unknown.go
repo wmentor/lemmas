@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/wmentor/lemmas/controller/generic"
 	"github.com/wmentor/lemmas/engine/forms"
 	"github.com/wmentor/serv"
 	"github.com/wmentor/tokens"
@@ -15,6 +16,8 @@ func init() {
 }
 
 func handler(c *serv.Context) {
+
+	vars := generic.DefaultVars(c)
 
 	if c.Method() == "POST" {
 
@@ -34,13 +37,13 @@ func handler(c *serv.Context) {
 
 		c.SetContentType("text/html; charset=utf-8")
 		c.WriteHeader(http.StatusOK)
-		data := map[string]interface{}{"data": maker.String()}
-		c.Render("cp/words/unknown_result.jet", data)
+		vars["data"] = maker.String()
+		c.Render("cp/words/unknown_result.jet", vars)
 
 		return
 	}
 
 	c.SetContentType("text/html; charset=utf-8")
 	c.WriteHeader(http.StatusOK)
-	c.Render("cp/words/unknown_check.jet", nil)
+	c.Render("cp/words/unknown_check.jet", vars)
 }

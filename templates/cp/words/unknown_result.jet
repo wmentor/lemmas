@@ -1,12 +1,7 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-<style>
-.found {color: #444;}
-.unknown {color: #ccc;}
-</style>
-</head>
-<body>
+{{ extends "cp/base.jet" }}
+
+{{ block body() }}
+
 {{ data | noescape }}
-</body>
-</html>
+
+{{ end }}
