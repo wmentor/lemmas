@@ -2,6 +2,10 @@
 
 {{ block body() }}
 
+<a href="/cp/words/unknown">поиск неизвестных слов</a>
+
+<h2>Загрузка слов</h2>
+
 <form method="POST">
 Слова:<br/>
 <textarea name="words" rows="30" style="WIDTH:100%;"></textarea> <br/>

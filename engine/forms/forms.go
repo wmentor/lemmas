@@ -5,23 +5,68 @@ import (
 	"fmt"
 	"io"
 	"sort"
+	"strconv"
 	"strings"
 )
 
 var (
-	data map[string]string = map[string]string{}
+	data      map[string]string = map[string]string{}
+	signs     map[string]bool
+	ruLetters string = "йцукенгшщзхъфывапролджэёячсмитьбю"
+	enLetters string = "qwertyuiopasdfghjklzxcvbnm"
+	skLetters string = "-" + ruLetters + enLetters
 )
 
+func init() {
+	signs = map[string]bool{}
+
+	for _, s := range strings.Fields(". , ! ? - : ; ( ) [ ] { } \" ' + / & % « » < > =") {
+		signs[s] = true
+	}
+}
+
+func hasSpecial(f string) bool {
+	if signs[f] {
+		return true
+	}
+
+	if _, err := strconv.ParseInt(f, 10, 64); err == nil {
+		return true
+	}
+
+	if strings.IndexAny(f, ".:/_@#'") > -1 {
+		return true
+	}
+
+	if strings.IndexAny(f, "0123456789") > -1 && strings.IndexAny(f, skLetters) > -1 {
+		return true
+	}
+
+	return false
+}
+
 func Has(f string) bool {
-	_, has := data[f]
-	return has
+	if _, has := data[f]; has {
+		return has
+	}
+
+	if hasSpecial(f) {
+		return true
+	}
+
+	return false
 }
 
 func EachBase(f string, fn func(string) bool) {
-	for _, base := range strings.Fields(data[f]) {
-		if !fn(base) {
-			return
+
+	if str, has := data[f]; has {
+		for _, base := range strings.Fields(str) {
+			if !fn(base) {
+				return
+			}
 		}
+	} else if hasSpecial(f) {
+		fn(f)
 	}
 }
 

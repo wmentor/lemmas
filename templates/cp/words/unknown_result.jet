@@ -2,6 +2,10 @@
 
 {{ block body() }}
 
+<a href="/cp/words/load">загрузка слов</a> / <a href="/cp/words/unknown">поиск неизвестных слов</a>
+
+<h2>Результаты поиск неизвестных слов</h2>
+
 {{ data | noescape }}
 
 {{ end }}

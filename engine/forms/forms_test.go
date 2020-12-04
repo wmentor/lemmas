@@ -36,6 +36,9 @@ func TestForms(t *testing.T) {
 	tHas("театр", true)
 	tHas("огню", true)
 	tHas(")))!231", false)
+	tHas("2345342", true)
+	tHas("https://yandex.ru", true)
+	tHas("-", true)
 
 	buf := bytes.NewBuffer(nil)
 
