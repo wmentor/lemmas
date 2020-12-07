@@ -46,8 +46,17 @@ func hasSpecial(f string) bool {
 }
 
 func Has(f string) bool {
-	if _, has := data[f]; has {
-		return has
+
+	for i, _ := range f {
+		if _, has := data[f[i:]]; has {
+			return true
+		}
+	}
+
+	if idx := strings.IndexByte(f, '-'); idx > -1 {
+		if Has(f[:idx]) && Has(f[idx+1:]) {
+			return true
+		}
 	}
 
 	if hasSpecial(f) {

@@ -20,6 +20,7 @@ func TestForms(t *testing.T) {
 	театру театр
 	театром театр
 	театре театр
+	ход ход
 	`
 
 	Load(strings.NewReader(txt))
@@ -34,11 +35,11 @@ func TestForms(t *testing.T) {
 
 	tHas("теста", true)
 	tHas("театр", true)
-	//	tHas("огню", true)
 	tHas(")))!231", false)
 	tHas("2345342", true)
 	tHas("https://yandex.ru", true)
 	tHas("-", true)
+	tHas("параход-переход", true)
 
 	buf := bytes.NewBuffer(nil)
 
@@ -54,6 +55,7 @@ func TestForms(t *testing.T) {
 тесте тест тесто
 тестом тест тесто
 тесту тест тесто
+ход ход
 ` {
 		t.Fatal("Save failed")
 	}
