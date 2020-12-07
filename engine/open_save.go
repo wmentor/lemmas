@@ -2,7 +2,6 @@ package engine
 
 import (
 	"bufio"
-	"compress/gzip"
 	"os"
 	"time"
 
@@ -34,8 +33,8 @@ func Open(dir string) {
 
 	dataDir = dir
 
-	formsFile = dataDir + "/forms.db"
-	metaFile = dataDir + "/meta.db"
+	formsFile = dataDir + "/forms.txt"
+	metaFile = dataDir + "/meta.txt"
 
 	writeAccess(func() {
 
@@ -44,13 +43,8 @@ func Open(dir string) {
 
 			br := bufio.NewReader(rh)
 
-			if gz, err := gzip.NewReader(br); err == nil {
-				defer gz.Close()
-				forms.Reset()
-				forms.Load(gz)
-			} else {
-				log.Errorf("read file %s error: %s", formsFile, err.Error())
-			}
+			forms.Reset()
+			forms.Load(br)
 
 		} else {
 			log.Errorf("read file %s error: %s", formsFile, err.Error())
@@ -61,13 +55,9 @@ func Open(dir string) {
 
 			br := bufio.NewReader(rh)
 
-			if gz, err := gzip.NewReader(br); err == nil {
-				defer gz.Close()
-				meta.Reset()
-				meta.Load(gz)
-			} else {
-				log.Errorf("read file %s error: %s", metaFile, err.Error())
-			}
+			meta.Reset()
+			meta.Load(br)
+
 		} else {
 			log.Errorf("read file %s error: %s", metaFile, err.Error())
 		}
@@ -81,10 +71,7 @@ func Save() {
 
 		if wh, err := os.Create(formsFile); err == nil {
 			defer wh.Close()
-
-			gz := gzip.NewWriter(wh)
-			defer gz.Close()
-			forms.Save(gz)
+			forms.Save(wh)
 
 		} else {
 			log.Errorf("write file %s error: %s", formsFile, err.Error())
@@ -92,10 +79,7 @@ func Save() {
 
 		if wh, err := os.Create(metaFile); err == nil {
 			defer wh.Close()
-
-			gz := gzip.NewWriter(wh)
-			defer gz.Close()
-			meta.Save(gz)
+			meta.Save(wh)
 		} else {
 			log.Errorf("write file %s error: %s", metaFile, err.Error())
 		}

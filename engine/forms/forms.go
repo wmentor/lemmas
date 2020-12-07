@@ -46,8 +46,17 @@ func hasSpecial(f string) bool {
 }
 
 func Has(f string) bool {
-	if _, has := data[f]; has {
-		return has
+
+	for i, _ := range f {
+		if _, has := data[f[i:]]; has {
+			return true
+		}
+	}
+
+	if idx := strings.IndexByte(f, '-'); idx > -1 {
+		if Has(f[:idx]) && Has(f[idx+1:]) {
+			return true
+		}
 	}
 
 	if hasSpecial(f) {
@@ -97,16 +106,6 @@ func Add(cur string, base string) {
 
 	} else {
 		data[cur] = base
-	}
-}
-
-func AddWord(txt string) {
-	list := strings.Fields(strings.ToLower(txt))
-	if len(list) > 0 {
-		base := list[0]
-		for _, f := range list {
-			Add(f, base)
-		}
 	}
 }
 
