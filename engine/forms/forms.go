@@ -100,16 +100,6 @@ func Add(cur string, base string) {
 	}
 }
 
-func AddWord(txt string) {
-	list := strings.Fields(strings.ToLower(txt))
-	if len(list) > 0 {
-		base := list[0]
-		for _, f := range list {
-			Add(f, base)
-		}
-	}
-}
-
 func Reset() {
 	data = make(map[string]string)
 }

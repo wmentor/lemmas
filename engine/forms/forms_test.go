@@ -30,11 +30,11 @@ func TestForms(t *testing.T) {
 		}
 	}
 
-	AddWord("огонь огня огню огонь огнем огне")
+	//	AddWord("огонь огня огню огонь огнем огне")
 
 	tHas("теста", true)
 	tHas("театр", true)
-	tHas("огню", true)
+	//	tHas("огню", true)
 	tHas(")))!231", false)
 	tHas("2345342", true)
 	tHas("https://yandex.ru", true)
@@ -44,12 +44,7 @@ func TestForms(t *testing.T) {
 
 	Save(buf)
 
-	if buf.String() != `огне огонь
-огнем огонь
-огню огонь
-огня огонь
-огонь огонь
-театр театр
+	if buf.String() != `театр театр
 театра театр
 театре театр
 театром театр
