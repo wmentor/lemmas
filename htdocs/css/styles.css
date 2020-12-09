@@ -153,6 +153,10 @@ figure img {
 .social-vk { background-image: url('/images/social/vk.png'); }
 .social-lj { background-image: url('/images/social/lj.png'); }
 
+textarea {
+  font-size: 16px;
+}
+
 /*DESKTOP*/
 
 @media screen and (max-width:1920px) and (min-width:1050px) {

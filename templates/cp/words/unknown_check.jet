@@ -8,7 +8,7 @@
 
 <form method="POST">
 Данные:<br/>
-<textarea name="data" rows="30" style="WIDTH:100%;"></textarea> <br/>
+<textarea name="data" rows="25" style="WIDTH:100%;"></textarea> <br/>
 <input type="submit" value="ВВОД">
 </form>
 

@@ -8,7 +8,7 @@
 
 <form method="POST">
 Слова:<br/>
-<textarea name="words" rows="30" style="WIDTH:100%;"></textarea> <br/>
+<textarea name="words" rows="25" style="WIDTH:100%;"></textarea> <br/>
 <input type="submit" value="ВВОД">
 </form>
 
