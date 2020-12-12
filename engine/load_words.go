@@ -10,7 +10,7 @@ func LoadWords(in io.Reader) {
 
 	writeAccess(func() {
 
-		forms.Load(in)
+		forms.LoadForms(in)
 		needSave = true
 
 	})

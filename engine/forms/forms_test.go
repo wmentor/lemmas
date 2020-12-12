@@ -23,7 +23,7 @@ func TestForms(t *testing.T) {
 	ход ход
 	`
 
-	Load(strings.NewReader(txt))
+	LoadForms(strings.NewReader(txt))
 
 	tHas := func(f string, wait bool) {
 		if Has(f) != wait {
@@ -43,7 +43,7 @@ func TestForms(t *testing.T) {
 
 	buf := bytes.NewBuffer(nil)
 
-	Save(buf)
+	SaveForms(buf)
 
 	if buf.String() != `театр театр
 театра театр

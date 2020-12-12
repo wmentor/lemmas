@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	data      map[string]string = map[string]string{}
+	forms     map[string]string = map[string]string{}
+	fixed     map[string]string = map[string]string{}
 	signs     map[string]bool
 	ruLetters string = "йцукенгшщзхъфывапролджэёячсмитьбю"
 	enLetters string = "qwertyuiopasdfghjklzxcvbnm"
@@ -34,6 +35,10 @@ func hasSpecial(f string) bool {
 		return true
 	}
 
+	if strings.HasPrefix(f, "по-") {
+		return true
+	}
+
 	if strings.IndexAny(f, ".:/_@#'") > -1 {
 		return true
 	}
@@ -47,8 +52,12 @@ func hasSpecial(f string) bool {
 
 func Has(f string) bool {
 
+	if _, has := fixed[f]; has {
+		return true
+	}
+
 	for i, _ := range f {
-		if _, has := data[f[i:]]; has {
+		if _, has := forms[f[i:]]; has {
 			return true
 		}
 	}
@@ -68,7 +77,7 @@ func Has(f string) bool {
 
 func EachBase(f string, fn func(string) bool) {
 
-	if str, has := data[f]; has {
+	if str, has := forms[f]; has {
 		for _, base := range strings.Fields(str) {
 			if !fn(base) {
 				return
@@ -90,11 +99,11 @@ func CurBase(f string, fn func(string) bool) {
 	}
 }
 
-func Add(cur string, base string) {
+func add(hash map[string]string, cur string, base string) {
 	cur = strings.ToLower(cur)
 	base = strings.ToLower(base)
 
-	if ds, has := data[cur]; has {
+	if ds, has := hash[cur]; has {
 
 		for _, v := range strings.Fields(ds) {
 			if v == base {
@@ -102,18 +111,27 @@ func Add(cur string, base string) {
 			}
 		}
 
-		data[cur] = ds + " " + base
+		hash[cur] = ds + " " + base
 
 	} else {
-		data[cur] = base
+		hash[cur] = base
 	}
 }
 
-func Reset() {
-	data = make(map[string]string)
+func Add(cur string, base string) {
+	add(forms, cur, base)
 }
 
-func Load(in io.Reader) {
+func AddFixed(cur string, base string) {
+	add(fixed, cur, base)
+}
+
+func Reset() {
+	forms = make(map[string]string)
+	fixed = make(map[string]string)
+}
+
+func load(dest map[string]string, in io.Reader) {
 	br := bufio.NewReader(in)
 
 	for {
@@ -125,22 +143,38 @@ func Load(in io.Reader) {
 		if list := strings.Fields(str); len(list) > 1 {
 			f := list[0]
 			for _, base := range list[1:] {
-				Add(f, base)
+				add(dest, f, base)
 			}
 		}
 	}
 }
 
-func Save(out io.Writer) {
-	keys := make([]string, 0, len(data))
+func LoadForms(in io.Reader) {
+	load(forms, in)
+}
 
-	for f := range data {
+func LoadFixed(in io.Reader) {
+	load(fixed, in)
+}
+
+func save(src map[string]string, out io.Writer) {
+	keys := make([]string, 0, len(forms))
+
+	for f := range src {
 		keys = append(keys, f)
 	}
 
 	sort.Sort(sort.StringSlice(keys))
 
 	for _, f := range keys {
-		fmt.Fprintf(out, "%s %s\n", f, data[f])
+		fmt.Fprintf(out, "%s %s\n", f, src[f])
 	}
+}
+
+func SaveForms(out io.Writer) {
+	save(forms, out)
+}
+
+func SaveFixed(out io.Writer) {
+	save(fixed, out)
 }

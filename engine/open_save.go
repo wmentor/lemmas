@@ -13,6 +13,7 @@ import (
 var (
 	dataDir   string
 	formsFile string
+	fixedFile string
 	metaFile  string
 	needSave  bool
 )
@@ -34,17 +35,33 @@ func Open(dir string) {
 	dataDir = dir
 
 	formsFile = dataDir + "/forms.txt"
+	fixedFile = dataDir + "/fixed.txt"
 	metaFile = dataDir + "/meta.txt"
 
 	writeAccess(func() {
 
+		forms.Reset()
+		meta.Reset()
+
 		if rh, err := os.Open(formsFile); err == nil {
 			defer rh.Close()
+			log.Infof("read %s", formsFile)
 
 			br := bufio.NewReader(rh)
 
-			forms.Reset()
-			forms.Load(br)
+			forms.LoadForms(br)
+
+		} else {
+			log.Errorf("read file %s error: %s", formsFile, err.Error())
+		}
+
+		if rh, err := os.Open(fixedFile); err == nil {
+			defer rh.Close()
+			log.Infof("read %s", fixedFile)
+
+			br := bufio.NewReader(rh)
+
+			forms.LoadFixed(br)
 
 		} else {
 			log.Errorf("read file %s error: %s", formsFile, err.Error())
@@ -52,10 +69,10 @@ func Open(dir string) {
 
 		if rh, err := os.Open(metaFile); err == nil {
 			defer rh.Close()
+			log.Infof("read %s", metaFile)
 
 			br := bufio.NewReader(rh)
 
-			meta.Reset()
 			meta.Load(br)
 
 		} else {
@@ -71,7 +88,15 @@ func Save() {
 
 		if wh, err := os.Create(formsFile); err == nil {
 			defer wh.Close()
-			forms.Save(wh)
+			forms.SaveForms(wh)
+
+		} else {
+			log.Errorf("write file %s error: %s", formsFile, err.Error())
+		}
+
+		if wh, err := os.Create(fixedFile); err == nil {
+			defer wh.Close()
+			forms.SaveFixed(wh)
 
 		} else {
 			log.Errorf("write file %s error: %s", formsFile, err.Error())
