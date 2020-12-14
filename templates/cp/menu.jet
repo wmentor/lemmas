@@ -1,5 +1,6 @@
 <div class="menu">
 <ul class="area">
 <li class="item"><a href="/cp/words/load">Слова</a></li>
+<li class="item"><a href="/cp/stat">Статистика</a></li>
 </ul>
 </div>

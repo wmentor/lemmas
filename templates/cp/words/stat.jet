@@ -1,0 +1,12 @@
+{{ extends "cp/base.jet" }}
+
+{{ block body() }}
+
+<h2>Статистика</h2>
+
+<ul>
+    <li>Число форм: {{ totalForms }}</li>
+    <li>Число фиксированных: {{ totalFixed }}</li>
+</ul>
+
+{{ end }}

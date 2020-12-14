@@ -3,6 +3,7 @@ package generic
 import (
 	"time"
 
+	"github.com/wmentor/lemmas/engine/forms"
 	"github.com/wmentor/serv"
 )
 
@@ -15,6 +16,8 @@ func DefaultVars(c *serv.Context) map[string]interface{} {
 
 	vars["title"] = "Lemmas"
 	vars["version"] = version
+	vars["totalForms"] = forms.TotalForms()
+	vars["totalFixed"] = forms.TotalFixed()
 
 	return vars
 }

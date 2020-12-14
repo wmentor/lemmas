@@ -56,7 +56,7 @@ func Has(f string) bool {
 		return true
 	}
 
-	for i, _ := range f {
+	for i := range f {
 		if _, has := forms[f[i:]]; has {
 			return true
 		}
@@ -177,4 +177,12 @@ func SaveForms(out io.Writer) {
 
 func SaveFixed(out io.Writer) {
 	save(fixed, out)
+}
+
+func TotalForms() int {
+	return len(forms)
+}
+
+func TotalFixed() int {
+	return len(fixed)
 }

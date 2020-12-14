@@ -2,7 +2,7 @@
 
 {{ block body() }}
 
-<a href="/cp/words/load">загрузка слов</a>
+<a href="/cp/words/load" class="link">загрузка слов</a>
 
 <h2>Поиск неизвестных слов</h2>
 
