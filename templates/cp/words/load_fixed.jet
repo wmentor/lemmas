@@ -2,9 +2,10 @@
 
 {{ block body() }}
 
+<a href="/cp/words/load/forms" class="link">загрузка форм</a> /
 <a href="/cp/words/unknown" class="link">поиск неизвестных слов</a>
 
-<h2>Загрузка слов</h2>
+<h2>Загрузка фиксированных форм</h2>
 
 <form method="POST">
 Слова:<br/>

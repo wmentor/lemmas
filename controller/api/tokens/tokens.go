@@ -1,6 +1,10 @@
 package tokens
 
 import (
+	"bytes"
+	"io"
+
+	"github.com/wmentor/html"
 	"github.com/wmentor/serv"
 	"github.com/wmentor/tokens"
 )
@@ -13,7 +17,17 @@ func handler(c *serv.Context) {
 
 	result := make([]string, 0, 1024)
 
-	tokens.Process(c.Body(), func(t string) {
+	var in io.Reader
+
+	if c.HasQueryParam("html") {
+		parser := html.New()
+		parser.Parse(c.Body())
+		in = bytes.NewReader(parser.Text())
+	} else {
+		in = c.Body()
+	}
+
+	tokens.Process(in, func(t string) {
 		result = append(result, t)
 	})
 

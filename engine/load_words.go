@@ -15,3 +15,13 @@ func LoadWords(in io.Reader) {
 
 	})
 }
+
+func LoadFixed(in io.Reader) {
+
+	writeAccess(func() {
+
+		forms.LoadFixed(in)
+		needSave = true
+
+	})
+}
