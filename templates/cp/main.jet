@@ -1,0 +1,6 @@
+{{ extends "cp/base.jet" }}
+
+{{ block body() }}
+
+
+{{ end }}
