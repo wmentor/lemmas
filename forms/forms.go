@@ -1,0 +1,79 @@
+package forms
+
+import (
+	"bufio"
+	"bytes"
+	"io"
+	"strings"
+
+	_ "embed"
+)
+
+// Iteroator func for Each call
+type EachFunc func(string) bool
+
+//go:embed data.txt
+var dataFile []byte
+
+var (
+	formData map[string]string
+)
+
+func init() {
+	formData = make(map[string]string)
+
+	loadData(bytes.NewReader(dataFile))
+}
+
+func loadData(in io.Reader) {
+
+	br := bufio.NewReader(in)
+
+	for {
+		str, err := br.ReadString('\n')
+		if err != nil && str == "" {
+			break
+		}
+
+		list := strings.Fields(strings.ToLower(str))
+
+		for _, f := range list {
+			pushPair(f, f)
+			pushPair(f, list[0])
+		}
+	}
+}
+
+func pushPair(src, dest string) {
+	if res, has := formData[src]; has {
+		list := strings.Split(res, " ")
+		for _, c := range list {
+			if c == dest {
+				return
+			}
+		}
+		list = append(list, dest)
+		formData[src] = strings.Join(list, " ")
+	} else {
+		formData[src] = dest
+	}
+}
+
+// Iterate over current and each base forms
+func Each(src string, fn EachFunc) {
+	if res, has := Get(src); has {
+		for _, f := range res {
+			if !fn(f) {
+				return
+			}
+		}
+	}
+}
+
+// Get current and base forms for src string
+func Get(src string) ([]string, bool) {
+	if res, has := formData[src]; has {
+		return strings.Fields(res), true
+	}
+	return nil, false
+}
