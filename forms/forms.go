@@ -40,7 +40,6 @@ func loadData(in io.Reader) {
 		list := strings.Fields(strings.ToLower(str))
 
 		for _, f := range list {
-			pushPair(f, f)
 			pushPair(f, list[0])
 		}
 	}
@@ -61,18 +60,20 @@ func pushPair(src, dest string) {
 	}
 }
 
-// Iterate over current and each base forms
+// Iterate over current and each known base forms
 func Each(src string, fn EachFunc) {
-	if res, has := Get(src); has {
-		for _, f := range res {
-			if !fn(f) {
-				return
+	if fn(src) {
+		if res, has := Get(src); has {
+			for _, f := range res {
+				if f != src && !fn(f) {
+					return
+				}
 			}
 		}
 	}
 }
 
-// Get current and base forms for src string
+// Get base forms for src string if exists
 func Get(src string) ([]string, bool) {
 	if res, has := formData[src]; has {
 		return strings.Fields(res), true
