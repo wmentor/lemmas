@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	_ "embed"
+	_ "embed" //nolint
 )
 
 //go:generate go run generator.go

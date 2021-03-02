@@ -1,12 +1,15 @@
 .PHONY: all
 
-all: generate test
+all: generate lint test
 
 generate:
 	$(info ****** GENERATE ******)
 	go generate ./forms
 	go generate ./keywords
 
+lint:
+	$(info ****** LINT ******)
+	golangci-lint run
 test:
 	$(info ****** RUN TESTS ******)
 	go test ./... -cover
