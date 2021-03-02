@@ -4,6 +4,7 @@ all: generate lint test
 
 generate:
 	$(info ****** GENERATE ******)
+	go generate ./dicts
 	go generate ./forms
 	go generate ./keywords
 

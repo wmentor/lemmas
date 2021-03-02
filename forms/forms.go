@@ -23,8 +23,8 @@ var (
 
 func init() {
 	formData = make(map[string]string)
-
 	loadData(bytes.NewReader(dataFile))
+	dataFile = nil
 }
 
 func loadData(in io.Reader) {
