@@ -11,9 +11,15 @@ import (
 //go:embed dict_names.txt
 var dictNames []byte
 
+//go:embed dict_lastnames.txt
+var dictLastnames []byte
+
 func loader() {
 	allDicts["names"] = dictFromBytes(dictNames)
 	dictNames = nil
+
+	allDicts["lastnames"] = dictFromBytes(dictLastnames)
+	dictLastnames = nil
 }
 
 func dictFromBytes(in []byte) Dict {

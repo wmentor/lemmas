@@ -54,7 +54,7 @@ func saveData(filename string, list []string) {
 
 func main() {
 
-	for _, filename := range []string{"dict_names.txt"} {
+	for _, filename := range []string{"dict_lastnames.txt", "dict_names.txt"} {
 		list := loadData(filename)
 		if len(list) > 0 {
 			saveData(filename, list)
