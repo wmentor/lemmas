@@ -19,7 +19,7 @@ func loadData() []string {
 
 	br := bufio.NewReader(rh)
 
-	var list []string
+	hash := make(map[string]bool)
 
 	for {
 		str, err := br.ReadString('\n')
@@ -30,10 +30,16 @@ func loadData() []string {
 		if str == "" {
 			continue
 		}
-		list = append(list, str)
+		hash[str] = true
 	}
-	if len(list) == 0 {
+	if len(hash) == 0 {
 		return nil
+	}
+
+	list := make([]string, 0, len(hash))
+
+	for k := range hash {
+		list = append(list, k)
 	}
 
 	sort.Strings(list)
