@@ -12,9 +12,10 @@ type Counter interface {
 	Inc(key string)
 	KeyNames() []string
 	Keys() []*Key
+	Reset()
 }
 
 // Create new counter
 func New() Counter {
-	return mapcnt(make(map[string]int64))
+	return &mapcnt{data: make(map[string]int64)}
 }

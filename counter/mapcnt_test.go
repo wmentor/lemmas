@@ -8,16 +8,16 @@ import (
 
 func TestMapCnt(t *testing.T) {
 
-	m := New().(mapcnt)
+	m := New()
 
 	tW := func(key string, list []string) {
 		m.Inc(key)
-		strs := make([]string, len(m))
-		for i, v := range m.Keys() {
-			strs[i] = v.Name
+		strs := []string{}
+		for _, v := range m.Keys() {
+			strs = append(strs, v.Name)
 		}
 		if strings.Join(strs, " ") != strings.Join(list, " ") {
-			t.Fatal("failed")
+			t.Fatalf("failed res=%v wait=%s", strs, list)
 		}
 	}
 
@@ -34,4 +34,7 @@ func TestMapCnt(t *testing.T) {
 	if strings.Join(list, "") != "0125" {
 		t.Fatal("KeyNames failed")
 	}
+
+	m.Reset()
+	tW("5", []string{"5"})
 }
