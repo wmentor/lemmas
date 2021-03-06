@@ -9,8 +9,6 @@ import (
 	_ "embed" //nolint
 )
 
-//go:generate go run generator.go
-
 //go:embed data.txt
 var dataFile []byte
 

@@ -9,8 +9,6 @@ import (
 	_ "embed" //nolint
 )
 
-//go:generate go run generator.go
-
 // Iteroator func for Each call
 type EachFunc func(string) bool
 

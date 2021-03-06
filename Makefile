@@ -4,8 +4,8 @@ all: generate lint test
 
 generate:
 	$(info ****** GENERATE ******)
-	go generate ./forms
-	go generate ./keywords
+	go run ./generator/generator.go -f ./forms/data.txt
+	go run ./generator/generator.go -f ./keywords/data.txt
 
 lint:
 	$(info ****** LINT ******)
