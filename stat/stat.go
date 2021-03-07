@@ -5,7 +5,7 @@ import (
 )
 
 // text keyword statistics record
-type StatRecord = counter.Key
+type StatRecord = counter.Key //nolint
 
 // text keyword statistics collector
 type Stat interface {
