@@ -62,3 +62,9 @@ func Get(src string) ([]string, bool) {
 	}
 	return nil, false
 }
+
+// Has keyword check
+func Has(src string) bool {
+	_, has := data[src]
+	return has
+}
