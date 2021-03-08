@@ -36,7 +36,7 @@ func TextProc(in io.Reader) []*Keyword {
 		str := buf.Get(deep)
 
 		if deep > 1 {
-			cur = cur + "_"
+			cur += "_"
 		}
 
 		res := ""
