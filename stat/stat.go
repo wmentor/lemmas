@@ -15,31 +15,37 @@ type Stat interface {
 }
 
 type stat struct {
-	curCnt counter.Counter
+	tact   int
+	used   map[string]int
+	curCnt []string
 	allCnt counter.Counter
 }
 
 // create new Stat collector
 func New() Stat {
 	return &stat{
-		curCnt: counter.New(),
+		tact:   1,
+		used:   make(map[string]int),
+		curCnt: make([]string, 0, 32),
 		allCnt: counter.New(),
 	}
 }
 
 // add key (keyword/phrase from currect text statement)
 func (a *stat) AddKey(name string) {
-	if name[0] != '%' {
-		a.curCnt.Inc(name)
+	if a.tact != a.used[name] {
+		a.curCnt = append(a.curCnt, name)
+		a.used[name] = a.tact
 	}
 }
 
 // close currect tact (text statement)
 func (a *stat) EndTact() {
-	for _, k := range a.curCnt.KeyNames() {
+	a.tact++
+	for _, k := range a.curCnt {
 		a.allCnt.Inc(k)
 	}
-	a.curCnt.Reset()
+	a.curCnt = a.curCnt[:0]
 }
 
 // result text stat result

@@ -22,4 +22,5 @@ func TestLemmas(t *testing.T) {
 	}
 
 	tTP("тест", []string{"тест"})
+	tTP("текст . тест . тест", []string{"тест", "текст"})
 }

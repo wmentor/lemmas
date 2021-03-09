@@ -81,7 +81,10 @@ func TextProc(in io.Reader) []*Keyword {
 
 		if res, num := search("", 1); num > 0 {
 			if res != "" {
-				st.AddKey(res)
+				list, _ := keywords.Get(res)
+				for _, v := range list {
+					st.AddKey(v)
+				}
 			}
 			buf.Shift(num)
 			return
