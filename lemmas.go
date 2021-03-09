@@ -33,7 +33,7 @@ func TextProc(in io.Reader) []*Keyword {
 			return "", 0
 		}
 
-		str := buf.Get(deep)
+		str := buf.Get(deep - 1)
 
 		if deep > 1 {
 			cur += "_"
@@ -60,7 +60,7 @@ func TextProc(in io.Reader) []*Keyword {
 			}
 
 			if size <= deep {
-				if ok := keywords.Has(val); ok {
+				if ok := keywords.Is(val); ok {
 					cmpPhrase(deep, val)
 				}
 			}
