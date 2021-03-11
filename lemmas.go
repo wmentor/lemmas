@@ -10,7 +10,7 @@ import (
 	"github.com/wmentor/tokens"
 )
 
-type Keyword = stat.StatRecord //nolint
+type Keyword = stat.Record //nolint
 
 const (
 	bufferSize int = 5
@@ -20,7 +20,7 @@ var (
 	eos map[string]bool = map[string]bool{".": true, "?": true, "!": true, "…": true}
 )
 
-func TextProc(in io.Reader) []*Keyword {
+func TextProc(in io.Reader) []Keyword {
 
 	st := stat.New()
 	buf := buffer.New(bufferSize)

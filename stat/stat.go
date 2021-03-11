@@ -1,17 +1,23 @@
 package stat
 
 import (
+	"strings"
+
 	"github.com/wmentor/lemmas/counter"
 )
 
 // text keyword statistics record
-type StatRecord = counter.Key //nolint
+type Record struct {
+	Name    string
+	Counter int64
+	Weight  float64
+}
 
 // text keyword statistics collector
 type Stat interface {
 	AddKey(string)
 	EndTact()
-	Result() []*StatRecord
+	Result() []Record
 }
 
 type stat struct {
@@ -49,7 +55,17 @@ func (a *stat) EndTact() {
 }
 
 // result text stat result
-func (a *stat) Result() []*StatRecord {
+func (a *stat) Result() []Record {
 	a.EndTact()
-	return a.allCnt.Keys()
+
+	keys := a.allCnt.Keys()
+
+	res := make([]Record, len(keys))
+	for i, k := range keys {
+		res[i].Name = strings.ReplaceAll(k.Name, "_", " ")
+		res[i].Counter = k.Counter
+		res[i].Weight = k.Weight
+	}
+
+	return res
 }

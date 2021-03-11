@@ -17,5 +17,5 @@ func TestKeywords(t *testing.T) {
 	tG("формы", []string{"форма"})
 	tG("тесты", []string{"тест", "тестирование"})
 	tG("_____", nil)
-	tG("boltdb", []string{"boltdb", "встраиваемые_хранилища", "базы_данных", "databases"})
+	tG("boltdb", []string{"boltdb", "встраиваемые_хранилища", "базы_данных", "databases", "информационные_технологии"})
 }
