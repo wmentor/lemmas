@@ -4,6 +4,7 @@ import (
 	"io"
 
 	"github.com/wmentor/lemmas/buffer"
+	"github.com/wmentor/lemmas/dicts"
 	"github.com/wmentor/lemmas/forms"
 	"github.com/wmentor/lemmas/keywords"
 	"github.com/wmentor/lemmas/stat"
@@ -24,6 +25,8 @@ func TextProc(in io.Reader) []Keyword {
 
 	st := stat.New()
 	buf := buffer.New(bufferSize)
+
+	localKeywords := make(map[string][]string)
 
 	var search func(cur string, deep int) (string, int)
 
@@ -60,8 +63,57 @@ func TextProc(in io.Reader) []Keyword {
 			}
 
 			if size <= deep {
+
 				if ok := keywords.Is(val); ok {
 					cmpPhrase(deep, val)
+				}
+
+				if deep == 1 && buf.Len() > 1 {
+
+					isName := false
+
+					if dicts.InDict("m_names", val) {
+						isName = true
+						wn := buf.Get(1)
+						forms.Each(wn, func(fn string) bool {
+							if dicts.InDict("m_lastnames", fn) {
+								res = val + "_" + fn
+								if _, has := localKeywords[res]; !has {
+									localKeywords[res] = []string{res, fn, val}
+								}
+								cmpPhrase(2, res)
+								return false
+							}
+							return true
+						})
+					}
+
+					if dicts.InDict("w_names", val) {
+						isName = true
+						wn := buf.Get(1)
+						forms.Each(wn, func(fn string) bool {
+							if dicts.InDict("w_lastnames", fn) {
+								res = val + "_" + fn
+								if _, has := localKeywords[res]; !has {
+									localKeywords[res] = []string{res, fn, val}
+								}
+								cmpPhrase(2, res)
+								return false
+							}
+							return true
+						})
+					}
+
+					if isName {
+						wn := buf.Get(1)
+						if dicts.InDict("roman", wn) {
+							res = val + "_" + wn
+							if _, has := localKeywords[res]; !has {
+								localKeywords[res] = []string{res}
+							}
+							cmpPhrase(2, res)
+						}
+					}
 				}
 			}
 
@@ -81,9 +133,15 @@ func TextProc(in io.Reader) []Keyword {
 
 		if res, num := search("", 1); num > 0 {
 			if res != "" {
-				list, _ := keywords.Get(res)
-				for _, v := range list {
-					st.AddKey(v)
+				if list, has := localKeywords[res]; has {
+					for _, v := range list {
+						st.AddKey(v)
+					}
+				} else {
+					list, _ := keywords.Get(res)
+					for _, v := range list {
+						st.AddKey(v)
+					}
 				}
 			}
 			buf.Shift(num)
