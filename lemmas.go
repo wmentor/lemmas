@@ -6,10 +6,11 @@ import (
 	"github.com/wmentor/lemmas/stat"
 )
 
-// text process analyse result record
-type Keyword = stat.Record //nolint
+// fetch result function type
+type EachResultFunc = stat.EachResultFunc
 
 // text processor interface
 type Processor interface {
-	TextProc(in io.Reader) []Keyword
+	AddText(in io.Reader)
+	FetchResult(EachResultFunc)
 }

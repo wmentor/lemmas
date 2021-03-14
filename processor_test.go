@@ -9,16 +9,16 @@ func TestProcessor(t *testing.T) {
 
 	tTP := func(src string, wait []string) {
 		p := New()
-		res := p.TextProc(strings.NewReader(src))
+		p.AddText(strings.NewReader(src))
+		var res []string
+		p.FetchResult(func(kw string, w float64) {
+			res = append(res, kw)
+		})
 		if len(res) != len(wait) {
 			t.Fatalf("TextProc failed for: %s return: %v", src, res)
 		}
-		list := make([]string, len(res))
-		for i, v := range res {
-			list[i] = v.Name
-		}
-		if strings.Join(list, " ") != strings.Join(wait, " ") {
-			t.Fatalf("TextProc failed for: %s return: %v", src, list)
+		if strings.Join(res, " ") != strings.Join(wait, " ") {
+			t.Fatalf("TextProc failed for: %s return: %v", src, res)
 		}
 	}
 

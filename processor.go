@@ -28,7 +28,7 @@ func New() Processor {
 }
 
 // process input text via io.Reader
-func (p *processor) TextProc(in io.Reader) []Keyword {
+func (p *processor) AddText(in io.Reader) {
 
 	tokens.Process(in, func(t string) {
 
@@ -44,7 +44,7 @@ func (p *processor) TextProc(in io.Reader) []Keyword {
 		p.tact()
 	}
 
-	return p.stat.Result()
+	p.stat.EndTact()
 }
 
 // search keywords from word stream
@@ -166,4 +166,9 @@ func (p *processor) tact() {
 	}
 
 	p.buf.Shift(1)
+}
+
+// fetch results
+func (p *processor) FetchResult(fn EachResultFunc) {
+	p.stat.Result(fn)
 }

@@ -29,18 +29,23 @@ var dictWLastnames []byte
 //go:embed dict_m_lastnames.txt
 var dictMLastnames []byte
 
+//go:embed dict_cities.txt
+var dictCities []byte
+
 func init() {
 	dictionaries = make(map[string]Dict)
 
+	dictionaries["cities"] = loadDict(bytes.NewReader(dictCities))
+	dictionaries["countries"] = loadDict(bytes.NewReader(dictCountries))
 	dictionaries["m_lastnames"] = loadDict(bytes.NewReader(dictMLastnames))
 	dictionaries["m_names"] = loadDict(bytes.NewReader(dictMNames))
+	dictionaries["roman"] = loadDict(bytes.NewReader(dictRoman))
 	dictionaries["w_lastnames"] = loadDict(bytes.NewReader(dictWLastnames))
 	dictionaries["w_names"] = loadDict(bytes.NewReader(dictWNames))
-	dictionaries["countries"] = loadDict(bytes.NewReader(dictCountries))
-	dictionaries["roman"] = loadDict(bytes.NewReader(dictRoman))
 
 	dictMNames = nil
 	dictWNames = nil
+	dictCities = nil
 	dictCountries = nil
 	dictRoman = nil
 }
