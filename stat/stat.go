@@ -6,18 +6,13 @@ import (
 	"github.com/wmentor/lemmas/counter"
 )
 
-// text keyword statistics record
-type Record struct {
-	Name    string
-	Counter int64
-	Weight  float64
-}
+type EachResultFunc func(key string, frequency float64)
 
 // text keyword statistics collector
 type Stat interface {
 	AddKey(string)
 	EndTact()
-	Result() []Record
+	Result(EachResultFunc)
 }
 
 type stat struct {
@@ -55,17 +50,14 @@ func (a *stat) EndTact() {
 }
 
 // result text stat result
-func (a *stat) Result() []Record {
+func (a *stat) Result(fn EachResultFunc) {
 	a.EndTact()
 
-	keys := a.allCnt.Keys()
+	total := float64(a.allCnt.Total())
 
-	res := make([]Record, len(keys))
-	for i, k := range keys {
-		res[i].Name = strings.ReplaceAll(k.Name, "_", " ")
-		res[i].Counter = k.Counter
-		res[i].Weight = k.Weight
-	}
-
-	return res
+	a.allCnt.EachFreq(func(key string, val int64) {
+		key = strings.ReplaceAll(key, "_", " ")
+		freq := float64(val) / total
+		fn(key, freq)
+	})
 }

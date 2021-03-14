@@ -16,9 +16,9 @@ func TestStat(t *testing.T) {
 
 		var list []string
 
-		for _, key := range st.Result() {
-			list = append(list, key.Name)
-		}
+		st.Result(func(key string, freq float64) {
+			list = append(list, key)
+		})
 
 		if strings.Join(list, " ") != strings.Join(wait, " ") {
 			t.Fatalf("Expect: %v", wait)

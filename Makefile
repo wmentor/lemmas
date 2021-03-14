@@ -4,6 +4,7 @@ all: generate lint test
 
 generate:
 	$(info ****** GENERATE ******)
+	go run ./generator/generator.go -f ./dicts/dict_cities.txt
 	go run ./generator/generator.go -f ./dicts/dict_countries.txt
 	go run ./generator/generator.go -f ./dicts/dict_m_lastnames.txt
 	go run ./generator/generator.go -f ./dicts/dict_m_names.txt
