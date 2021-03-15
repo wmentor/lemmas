@@ -20,11 +20,9 @@ type processor struct {
 
 // make new text processor
 func New() Processor {
-	return &processor{
-		buf:           buffer.New(bufferSize),
-		stat:          stat.New(),
-		localKeywords: make(map[string][]string),
-	}
+	p := &processor{}
+	p.Reset()
+	return p
 }
 
 // process input text via io.Reader
@@ -171,4 +169,10 @@ func (p *processor) tact() {
 // fetch results
 func (p *processor) FetchResult(fn EachResultFunc) {
 	p.stat.Result(fn)
+}
+
+func (p *processor) Reset() {
+	p.stat = stat.New()
+	p.buf = buffer.New(bufferSize)
+	p.localKeywords = make(map[string][]string)
 }

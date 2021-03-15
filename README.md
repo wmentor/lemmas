@@ -43,5 +43,8 @@ func main() {
   processor.FetchResult(func(keyphrase string, weight float64) {
     fmt.Println(keyphrase, weight)
   })
+
+  // reset and reinit object
+  processor.Reset()
 }
 ```
