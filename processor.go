@@ -1,8 +1,10 @@
 package lemmas
 
 import (
+	"bytes"
 	"io"
 
+	"github.com/wmentor/html"
 	"github.com/wmentor/lemmas/buffer"
 	"github.com/wmentor/lemmas/dicts"
 	"github.com/wmentor/lemmas/forms"
@@ -43,6 +45,15 @@ func (p *processor) AddText(in io.Reader) {
 	}
 
 	p.stat.EndTact()
+}
+
+// process input html via io.Reader
+func (p *processor) AddHTML(in io.Reader) {
+	parser := html.New()
+
+	parser.Parse(in)
+
+	p.AddText(bytes.NewReader(parser.Text()))
 }
 
 // search keywords from word stream
