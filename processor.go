@@ -3,6 +3,7 @@ package lemmas
 import (
 	"bytes"
 	"io"
+	"strings"
 
 	"github.com/wmentor/html"
 	"github.com/wmentor/lemmas/buffer"
@@ -76,7 +77,11 @@ func (p *processor) search(cur string, deep int) (string, int) {
 			res = cv
 			size = cs
 		} else if cs == size && cv != res {
-			res = "" // indeterminacy
+			dataRes := p.getKeywordData(res)
+			dataCV := p.getKeywordData(cv)
+			if strings.Join(dataRes, ";") != strings.Join(dataCV, ";") {
+				res = "" // indeterminacy
+			}
 		}
 	}
 
@@ -159,15 +164,8 @@ func (p *processor) tact() {
 
 	if res, num := p.search("", 1); num > 0 {
 		if res != "" {
-			if list, has := p.localKeywords[res]; has {
-				for _, v := range list {
-					p.stat.AddKey(v)
-				}
-			} else {
-				list, _ := keywords.Get(res)
-				for _, v := range list {
-					p.stat.AddKey(v)
-				}
+			for _, v := range p.getKeywordData(res) {
+				p.stat.AddKey(v)
 			}
 		}
 		p.buf.Shift(num)
@@ -175,6 +173,17 @@ func (p *processor) tact() {
 	}
 
 	p.buf.Shift(1)
+}
+
+// get keyword data (used with local and global keywords)
+func (p *processor) getKeywordData(kw string) []string {
+	if list, has := p.localKeywords[kw]; has {
+		return list
+	}
+	if list, has := keywords.Get(kw); has {
+		return list
+	}
+	return nil
 }
 
 // fetch results
