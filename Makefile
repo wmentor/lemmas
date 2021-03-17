@@ -11,7 +11,7 @@ generate:
 	go run ./generator/generator.go -f ./dicts/dict_w_lastnames.txt
 	go run ./generator/generator.go -f ./dicts/dict_w_names.txt
 	go run ./generator/generator.go -f ./forms/data.txt
-	go run ./generator/generator.go -f ./keywords/data.txt
+	go run ./generator/generator.go -f ./keywords/data.txt -shift 1
 
 lint:
 	$(info ****** LINT ******)
