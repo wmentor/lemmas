@@ -44,6 +44,7 @@ func TestProcessor(t *testing.T) {
 	tTP("вижу Ольгу Петрову, ", []string{"ольга", "ольга петрова", "петрова"})
 	tTP("о петре VIII, ", []string{"петр viii"})
 	tTP("разные вакцины", []string{"вакцины", "лекарства", "медицина"})
+	tTP("#футбол", []string{"спорт", "футбол"})
 
 	tTH("<html><body><p>о петре&nbsp;I</p></body></html>", []string{"петр i"})
 }

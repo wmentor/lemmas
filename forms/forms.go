@@ -37,8 +37,11 @@ func loadData(in io.Reader) {
 
 		list := strings.Fields(strings.ToLower(str))
 
-		for _, f := range list {
+		for i, f := range list {
 			pushPair(f, list[0])
+			if i == 0 {
+				pushPair("#"+list[0], list[0])
+			}
 		}
 	}
 }
