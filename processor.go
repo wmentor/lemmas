@@ -1,8 +1,11 @@
 package lemmas
 
 import (
+	"bytes"
 	"io"
+	"strings"
 
+	"github.com/wmentor/html"
 	"github.com/wmentor/lemmas/buffer"
 	"github.com/wmentor/lemmas/dicts"
 	"github.com/wmentor/lemmas/forms"
@@ -20,11 +23,9 @@ type processor struct {
 
 // make new text processor
 func New() Processor {
-	return &processor{
-		buf:           buffer.New(bufferSize),
-		stat:          stat.New(),
-		localKeywords: make(map[string][]string),
-	}
+	p := &processor{}
+	p.Reset()
+	return p
 }
 
 // process input text via io.Reader
@@ -47,6 +48,15 @@ func (p *processor) AddText(in io.Reader) {
 	p.stat.EndTact()
 }
 
+// process input html via io.Reader
+func (p *processor) AddHTML(in io.Reader) {
+	parser := html.New()
+
+	parser.Parse(in)
+
+	p.AddText(bytes.NewReader(parser.Text()))
+}
+
 // search keywords from word stream
 func (p *processor) search(cur string, deep int) (string, int) {
 	if deep > p.buf.Len() {
@@ -67,7 +77,11 @@ func (p *processor) search(cur string, deep int) (string, int) {
 			res = cv
 			size = cs
 		} else if cs == size && cv != res {
-			res = "" // indeterminacy
+			dataRes := p.getKeywordData(res)
+			dataCV := p.getKeywordData(cv)
+			if strings.Join(dataRes, ";") != strings.Join(dataCV, ";") {
+				res = "" // indeterminacy
+			}
 		}
 	}
 
@@ -150,15 +164,8 @@ func (p *processor) tact() {
 
 	if res, num := p.search("", 1); num > 0 {
 		if res != "" {
-			if list, has := p.localKeywords[res]; has {
-				for _, v := range list {
-					p.stat.AddKey(v)
-				}
-			} else {
-				list, _ := keywords.Get(res)
-				for _, v := range list {
-					p.stat.AddKey(v)
-				}
+			for _, v := range p.getKeywordData(res) {
+				p.stat.AddKey(v)
 			}
 		}
 		p.buf.Shift(num)
@@ -168,7 +175,24 @@ func (p *processor) tact() {
 	p.buf.Shift(1)
 }
 
+// get keyword data (used with local and global keywords)
+func (p *processor) getKeywordData(kw string) []string {
+	if list, has := p.localKeywords[kw]; has {
+		return list
+	}
+	if list, has := keywords.Get(kw); has {
+		return list
+	}
+	return nil
+}
+
 // fetch results
 func (p *processor) FetchResult(fn EachResultFunc) {
 	p.stat.Result(fn)
+}
+
+func (p *processor) Reset() {
+	p.stat = stat.New()
+	p.buf = buffer.New(bufferSize)
+	p.localKeywords = make(map[string][]string)
 }
