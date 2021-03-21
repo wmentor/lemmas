@@ -7,7 +7,7 @@ import (
 
 func TestProcessor(t *testing.T) {
 
-	tTP := func(src string, wait []string) {
+	tTP := func(src string, wait []string, tokCnt int64) {
 		p := New()
 		p.AddText(strings.NewReader(src))
 		var res []string
@@ -19,6 +19,9 @@ func TestProcessor(t *testing.T) {
 		}
 		if strings.Join(res, " ") != strings.Join(wait, " ") {
 			t.Fatalf("TextProc failed for: %s return: %v", src, res)
+		}
+		if p.Tokens() != tokCnt {
+			t.Fatalf("Tokens return wrong number %v expect %v", p.Tokens(), tokCnt)
 		}
 	}
 
@@ -37,14 +40,14 @@ func TestProcessor(t *testing.T) {
 		}
 	}
 
-	tTP("тест", []string{"тест", "тестирование"})
-	tTP("текст . тест . тест", []string{"тест", "тестирование", "текст"})
-	tTP("создать экспертную систему", []string{"информационные технологии", "экспертные системы"})
-	tTP("о тесте Петра Смирнова, ", []string{"петр", "петр смирнов", "смирнов", "тест", "тестирование"})
-	tTP("вижу Ольгу Петрову, ", []string{"ольга", "ольга петрова", "петрова"})
-	tTP("о петре VIII, ", []string{"петр viii"})
-	tTP("разные вакцины", []string{"вакцины", "лекарства", "медицина"})
-	tTP("#футбол", []string{"спорт", "футбол"})
+	tTP("тест", []string{"тест", "тестирование"}, 1)
+	tTP("текст . тест . тест", []string{"тест", "тестирование", "текст"}, 5)
+	tTP("создать экспертную систему", []string{"информационные технологии", "экспертные системы"}, 3)
+	tTP("о тесте Петра Смирнова, ", []string{"петр", "петр смирнов", "смирнов", "тест", "тестирование"}, 5)
+	tTP("вижу Ольгу Петрову, ", []string{"ольга", "ольга петрова", "петрова"}, 4)
+	tTP("о петре VIII, ", []string{"петр viii"}, 4)
+	tTP("разные вакцины", []string{"вакцины", "лекарства", "медицина"}, 2)
+	tTP("#футбол", []string{"спорт", "футбол"}, 1)
 
 	tTH("<html><body><p>о петре&nbsp;I</p></body></html>", []string{"петр i"})
 }

@@ -19,6 +19,8 @@ type processor struct {
 	buf           buffer.Buffer
 	stat          stat.Stat
 	localKeywords map[string][]string
+	tokensCounter int64
+	imageCounter  int64
 }
 
 // make new text processor
@@ -33,6 +35,7 @@ func (p *processor) AddText(in io.Reader) {
 
 	tokens.Process(in, func(t string) {
 
+		p.tokensCounter++
 		p.buf.Push(t)
 
 		if p.buf.Full() {
@@ -48,11 +51,20 @@ func (p *processor) AddText(in io.Reader) {
 	p.stat.EndTact()
 }
 
+// return current tokens counter value
+func (p *processor) Tokens() int64 {
+	return p.tokensCounter
+}
+
 // process input html via io.Reader
 func (p *processor) AddHTML(in io.Reader) {
 	parser := html.New()
 
 	parser.Parse(in)
+
+	parser.EachImage(func(img string) {
+		p.imageCounter++
+	})
 
 	p.AddText(bytes.NewReader(parser.Text()))
 }
@@ -194,5 +206,7 @@ func (p *processor) FetchResult(fn EachResultFunc) {
 func (p *processor) Reset() {
 	p.stat = stat.New()
 	p.buf = buffer.New(bufferSize)
+	p.tokensCounter = 0
+	p.imageCounter = 0
 	p.localKeywords = make(map[string][]string)
 }
