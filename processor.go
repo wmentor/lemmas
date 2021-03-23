@@ -30,6 +30,17 @@ func New() Processor {
 	return p
 }
 
+// calc reading time in seconds
+func (p *processor) ReadingTime() int64 {
+	sum := p.tokensCounter + p.imageCounter*2
+	add := int64(0)
+	if sum%3 != 0 {
+		add = 1
+	}
+	res := sum/3 + add
+	return res
+}
+
 // process input text via io.Reader
 func (p *processor) AddText(in io.Reader) {
 

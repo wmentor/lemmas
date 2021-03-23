@@ -40,6 +40,14 @@ func TestProcessor(t *testing.T) {
 		}
 	}
 
+	tRT := func(src string, readTime int64) {
+		p := New()
+		p.AddHTML(strings.NewReader(src))
+		if p.ReadingTime() != readTime {
+			t.Fatalf("ReadingTime failed for str=%v ret=%v wait=%v", src, p.ReadingTime(), readTime)
+		}
+	}
+
 	tTP("тест", []string{"тест", "тестирование"}, 1)
 	tTP("текст . тест . тест", []string{"тест", "тестирование", "текст"}, 5)
 	tTP("создать экспертную систему", []string{"информационные технологии", "экспертные системы"}, 3)
@@ -53,4 +61,8 @@ func TestProcessor(t *testing.T) {
 	tTP("владимиром путиным", []string{"политика", "путин", "россия"}, 2)
 
 	tTH("<html><body><p>о петре&nbsp;I</p></body></html>", []string{"петр i"})
+
+	tRT("1 2 3 4 5 6 7 8", 3)
+	tRT("", 0)
+	tRT("1 2 3 4 5 6 7 8 9 0 1 2 3 4", 5)
 }

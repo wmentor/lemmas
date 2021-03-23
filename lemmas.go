@@ -16,4 +16,5 @@ type Processor interface {
 	FetchResult(EachResultFunc) // return result callback
 	Tokens() int64              // tokens counter
 	Reset()                     // reset data and reinit object
+	ReadingTime() int64         // calc reading time in seconds
 }
