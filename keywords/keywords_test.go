@@ -14,8 +14,20 @@ func TestKeywords(t *testing.T) {
 		}
 	}
 
+	tIS := func(src string, has bool) {
+		ret := Is(src)
+		if ret != has {
+			t.Fatalf("Is failed for %v", src)
+		}
+	}
+
 	tG("формы", []string{"форма"})
 	tG("тесты", []string{"тест", "тестирование"})
 	tG("_____", nil)
 	tG("boltdb", []string{"boltdb", "встраиваемые_хранилища", "базы_данных", "databases", "информационные_технологии"})
+	tG("как_сыр_в_масле", []string{})
+
+	tIS("формы", true)
+	tIS("как_сыр_в_масле", true)
+	tIS("boltdb", true)
 }
