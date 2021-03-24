@@ -72,6 +72,7 @@ func main() {
 		")":  true,
 		"*":  true,
 		"/":  true,
+		";":  true,
 	}
 
 	cnt := counter.New()
@@ -88,7 +89,7 @@ func main() {
 
 	cnt.EachFreq(func(key string, val int64) {
 		i++
-		if i < 100 {
+		if i < 500 {
 			fmt.Println(key, val)
 		}
 	})

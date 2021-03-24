@@ -32,10 +32,14 @@ var dictMLastnames []byte
 //go:embed dict_cities.txt
 var dictCities []byte
 
+//go:embed dict_companies.txt
+var dictCompanies []byte
+
 func init() {
 	dictionaries = make(map[string]Dict)
 
 	dictionaries["cities"] = loadDict(bytes.NewReader(dictCities))
+	dictionaries["companies"] = loadDict(bytes.NewReader(dictCompanies))
 	dictionaries["countries"] = loadDict(bytes.NewReader(dictCountries))
 	dictionaries["m_lastnames"] = loadDict(bytes.NewReader(dictMLastnames))
 	dictionaries["m_names"] = loadDict(bytes.NewReader(dictMNames))
