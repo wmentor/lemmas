@@ -35,6 +35,12 @@ var dictCities []byte
 //go:embed dict_companies.txt
 var dictCompanies []byte
 
+//go:embed dict_m_patronymics.txt
+var dictMPatronymics []byte
+
+//go:embed dict_w_patronymics.txt
+var dictWPatronymics []byte
+
 func init() {
 	dictionaries = make(map[string]Dict)
 
@@ -43,9 +49,11 @@ func init() {
 	dictionaries["countries"] = loadDict(bytes.NewReader(dictCountries))
 	dictionaries["m_lastnames"] = loadDict(bytes.NewReader(dictMLastnames))
 	dictionaries["m_names"] = loadDict(bytes.NewReader(dictMNames))
+	dictionaries["m_patronymics"] = loadDict(bytes.NewReader(dictMPatronymics))
 	dictionaries["roman"] = loadDict(bytes.NewReader(dictRoman))
 	dictionaries["w_lastnames"] = loadDict(bytes.NewReader(dictWLastnames))
 	dictionaries["w_names"] = loadDict(bytes.NewReader(dictWNames))
+	dictionaries["w_patronymics"] = loadDict(bytes.NewReader(dictWPatronymics))
 
 	dictMNames = nil
 	dictWNames = nil
