@@ -36,6 +36,8 @@ func loadData(in io.Reader) {
 			for _, f := range list[1:] {
 				pushPair(list[0], f)
 			}
+		} else if len(list) == 1 {
+			data[list[0]] = ""
 		}
 	}
 }
