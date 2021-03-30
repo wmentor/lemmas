@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"strings"
+	"time"
 
 	"github.com/wmentor/html"
 	"github.com/wmentor/lemmas/buffer"
@@ -78,6 +79,27 @@ func (p *processor) AddHTML(in io.Reader) {
 	})
 
 	p.AddText(bytes.NewReader(parser.Text()))
+}
+
+// process input html from web page
+func (p *processor) AddURL(url string) error {
+
+	parser := html.New()
+
+	opts := &html.GetOpts{
+		Timeout: time.Second * 10,
+		Agent:   "Lemmas",
+	}
+
+	if err := parser.Get(url, opts); err != nil {
+		return err
+	}
+
+	parser.EachImage(func(img string) {
+		p.imageCounter++
+	})
+
+	return nil
 }
 
 // search keywords from word stream
