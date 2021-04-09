@@ -9,7 +9,7 @@ import (
 	_ "embed" //nolint
 )
 
-// Iteroator func for Each call
+// Iterator func for Each call
 type EachFunc func(string) bool
 
 //go:embed data.txt
