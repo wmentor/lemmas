@@ -58,25 +58,25 @@ func init() {
 	loadEmbed("countries", bytes.NewReader(dictCountries))
 	dictCountries = nil
 
-	loadEmbed("m_lastnames", bytes.NewReader(dictMLastnames))
+	loadEmbed("mlastnames", bytes.NewReader(dictMLastnames))
 	dictMLastnames = nil
 
-	loadEmbed("m_names", bytes.NewReader(dictMNames))
+	loadEmbed("mnames", bytes.NewReader(dictMNames))
 	dictMNames = nil
 
-	loadEmbed("m_patronymics", bytes.NewReader(dictMPatronymics))
+	loadEmbed("mpatronymics", bytes.NewReader(dictMPatronymics))
 	dictMPatronymics = nil
 
 	loadEmbed("roman", bytes.NewReader(dictRoman))
 	dictRoman = nil
 
-	loadEmbed("w_lastnames", bytes.NewReader(dictWLastnames))
+	loadEmbed("wlastnames", bytes.NewReader(dictWLastnames))
 	dictWLastnames = nil
 
-	loadEmbed("w_names", bytes.NewReader(dictWNames))
+	loadEmbed("wnames", bytes.NewReader(dictWNames))
 	dictWNames = nil
 
-	loadEmbed("w_patronymics", bytes.NewReader(dictWPatronymics))
+	loadEmbed("wpatronymics", bytes.NewReader(dictWPatronymics))
 	dictWPatronymics = nil
 
 }
@@ -127,12 +127,10 @@ func InDict(dict string, name string) bool {
 
 // Iterate over each word dict
 func Each(src string, fn EachFunc) {
-	if fn(src) {
-		if res, has := Get(src); has {
-			for _, f := range res {
-				if f != src && !fn(f) {
-					return
-				}
+	if res, has := Get(src); has {
+		for _, f := range res {
+			if f != src && !fn(f) {
+				return
 			}
 		}
 	}

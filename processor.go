@@ -22,6 +22,7 @@ type processor struct {
 	localKeywords map[string][]string
 	tokensCounter int64
 	imageCounter  int64
+	currentWords  []string
 }
 
 // make new text processor
@@ -45,19 +46,21 @@ func (p *processor) ReadingTime() int64 {
 // process input text via io.Reader
 func (p *processor) AddText(in io.Reader) {
 
+	st := newState(p)
+
 	tokens.Process(in, func(t string) {
 
 		p.tokensCounter++
 		p.buf.Push(t)
 
 		if p.buf.Full() {
-			p.tact()
+			p.tact(st)
 		}
 
 	})
 
 	for !p.buf.Empty() {
-		p.tact()
+		p.tact(st)
 	}
 
 	p.stat.EndTact()
@@ -99,6 +102,8 @@ func (p *processor) AddURL(url string) error {
 		p.imageCounter++
 	})
 
+	p.AddText(bytes.NewReader(parser.Text()))
+
 	return nil
 }
 
@@ -132,6 +137,7 @@ func (p *processor) search(cur string, deep int) (string, int) {
 
 	forms.Each(str, func(f string) bool {
 		val := cur + f
+		p.currentWords[deep-1] = f
 
 		if sr, ss := p.search(val, deep+1); ss > 0 {
 			cmpPhrase(ss, sr)
@@ -148,11 +154,11 @@ func (p *processor) search(cur string, deep int) (string, int) {
 
 				isName := false
 
-				if dicts.InDict("m_names", val) {
+				if dicts.InDict("mnames", val) {
 					isName = true
 					wn := p.buf.Get(1)
 					forms.Each(wn, func(fn string) bool {
-						if dicts.InDict("m_lastnames", fn) {
+						if dicts.InDict("mlastnames", fn) {
 							res = val + "_" + fn
 							if _, has := p.localKeywords[res]; !has {
 								p.localKeywords[res] = []string{res, fn, val}
@@ -164,11 +170,11 @@ func (p *processor) search(cur string, deep int) (string, int) {
 					})
 				}
 
-				if dicts.InDict("w_names", val) {
+				if dicts.InDict("wnames", val) {
 					isName = true
 					wn := p.buf.Get(1)
 					forms.Each(wn, func(fn string) bool {
-						if dicts.InDict("w_lastnames", fn) {
+						if dicts.InDict("wlastnames", fn) {
 							res = val + "_" + fn
 							if _, has := p.localKeywords[res]; !has {
 								p.localKeywords[res] = []string{res, fn, val}
@@ -200,12 +206,14 @@ func (p *processor) search(cur string, deep int) (string, int) {
 }
 
 // one buffer process tact
-func (p *processor) tact() {
+func (p *processor) tact(st *state) {
 	if eos[p.buf.Get(0)] {
 		p.stat.EndTact()
 		p.buf.Shift(1)
 		return
 	}
+
+	st.Reset()
 
 	if res, num := p.search("", 1); num > 0 {
 		if res != "" {
@@ -242,4 +250,5 @@ func (p *processor) Reset() {
 	p.tokensCounter = 0
 	p.imageCounter = 0
 	p.localKeywords = make(map[string][]string)
+	p.currentWords = make([]string, bufferSize)
 }
