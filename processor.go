@@ -3,6 +3,7 @@ package lemmas
 import (
 	"bytes"
 	"io"
+	"strconv"
 	"strings"
 	"time"
 
@@ -23,6 +24,7 @@ type processor struct {
 	tokensCounter int64
 	imageCounter  int64
 	currentWords  []string
+	replacing     []string
 }
 
 // make new text processor
@@ -144,59 +146,32 @@ func (p *processor) search(cur string, deep int) (string, int) {
 			return true
 		}
 
+		dicts.Each(f, func(f string) bool {
+
+			val := cur + f
+
+			if sr, ss := p.search(val, deep+1); ss > 0 {
+				cmpPhrase(ss, sr)
+				return true
+			}
+
+			if size <= deep {
+
+				if ok := keywords.Is(val); ok {
+					cmpPhrase(deep, val)
+				}
+
+			}
+
+			return true
+		})
+
 		if size <= deep {
 
 			if ok := keywords.Is(val); ok {
 				cmpPhrase(deep, val)
 			}
 
-			if deep == 1 && p.buf.Len() > 1 {
-
-				isName := false
-
-				if dicts.InDict("mnames", val) {
-					isName = true
-					wn := p.buf.Get(1)
-					forms.Each(wn, func(fn string) bool {
-						if dicts.InDict("mlastnames", fn) {
-							res = val + "_" + fn
-							if _, has := p.localKeywords[res]; !has {
-								p.localKeywords[res] = []string{res, fn, val}
-							}
-							cmpPhrase(2, res)
-							return false
-						}
-						return true
-					})
-				}
-
-				if dicts.InDict("wnames", val) {
-					isName = true
-					wn := p.buf.Get(1)
-					forms.Each(wn, func(fn string) bool {
-						if dicts.InDict("wlastnames", fn) {
-							res = val + "_" + fn
-							if _, has := p.localKeywords[res]; !has {
-								p.localKeywords[res] = []string{res, fn, val}
-							}
-							cmpPhrase(2, res)
-							return false
-						}
-						return true
-					})
-				}
-
-				if isName {
-					wn := p.buf.Get(1)
-					if dicts.InDict("roman", wn) {
-						res = val + "_" + wn
-						if _, has := p.localKeywords[res]; !has {
-							p.localKeywords[res] = []string{res}
-						}
-						cmpPhrase(2, res)
-					}
-				}
-			}
 		}
 
 		return true
@@ -218,6 +193,11 @@ func (p *processor) tact(st *state) {
 	if res, num := p.search("", 1); num > 0 {
 		if res != "" {
 			for _, v := range p.getKeywordData(res) {
+				if idx := strings.IndexByte(v, '$'); idx >= 0 {
+					for i, rep := range p.replacing[:num] {
+						v = strings.ReplaceAll(v, rep, p.currentWords[i])
+					}
+				}
 				p.stat.AddKey(v)
 			}
 		}
@@ -251,4 +231,9 @@ func (p *processor) Reset() {
 	p.imageCounter = 0
 	p.localKeywords = make(map[string][]string)
 	p.currentWords = make([]string, bufferSize)
+	p.replacing = make([]string, bufferSize)
+
+	for i := range p.replacing {
+		p.replacing[i] = "$" + strconv.Itoa(i)
+	}
 }
