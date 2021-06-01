@@ -3,7 +3,7 @@
 all: generate lint test
 
 generate:
-	@echo "****** GENERATE ******"
+	@echo "Generate dictionaries..."
 	go run ./generator/generator.go -f ./dicts/dict_cities.txt
 	go run ./generator/generator.go -f ./dicts/dict_companies.txt
 	go run ./generator/generator.go -f ./dicts/dict_countries.txt
@@ -17,8 +17,8 @@ generate:
 	go run ./generator/generator.go -f ./keywords/data.txt -shift 1
 
 lint:
-	@echo "****** LINT ******"
+	@echo "Run linter..."
 	golangci-lint run
 test:
-	@echo "****** RUN TESTS ******"
+	@echo "Run test..."
 	go test ./... -cover
