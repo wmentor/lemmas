@@ -16,6 +16,7 @@ golang
 google гугл гугла гуглу гуглом гугле
 grpc
 hadoop
+лариса ларисы ларисе ларису ларисой
 hi-tech hitech #hitech
 i
 iaas
