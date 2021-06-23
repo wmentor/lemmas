@@ -13,6 +13,7 @@ type EachResultFunc = stat.EachResultFunc
 type Processor interface {
 	AddText(in io.Reader)       // add text data to process
 	AddHTML(in io.Reader)       // add text data from HTML
+	AddURL(url string) error    // add html data from url
 	FetchResult(EachResultFunc) // return result callback
 	Tokens() int64              // tokens counter
 	Reset()                     // reset data and reinit object

@@ -12,10 +12,10 @@ func TestLoader(t *testing.T) {
 		}
 	}
 
-	tF("w_names", "елена", true)
-	tF("w_names", "елена123", false)
-	tF("m_names", "михаил", true)
-	tF("m_names", "___", false)
+	tF("wnames", "елена", true)
+	tF("wnames", "елена123", false)
+	tF("mnames", "михаил", true)
+	tF("mnames", "___", false)
 	tF("countries", "россия", true)
 	tF("___", "россия", false)
 }

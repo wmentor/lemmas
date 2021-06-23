@@ -1,3 +1,10 @@
+amd
 google
+microsoft
+nasa
+nvidia
+spacex
+газпром
 мтс
+ростелеком
 яндекс

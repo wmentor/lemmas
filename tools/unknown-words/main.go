@@ -73,6 +73,11 @@ func main() {
 		"*":  true,
 		"/":  true,
 		";":  true,
+		"[":  true,
+		"]":  true,
+		"&":  true,
+		"•":  true,
+		"·":  true,
 	}
 
 	cnt := counter.New()

@@ -3,7 +3,9 @@ package lemmas
 import (
 	"bytes"
 	"io"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/wmentor/html"
 	"github.com/wmentor/lemmas/buffer"
@@ -21,6 +23,8 @@ type processor struct {
 	localKeywords map[string][]string
 	tokensCounter int64
 	imageCounter  int64
+	currentWords  []string
+	replacing     []string
 }
 
 // make new text processor
@@ -44,19 +48,21 @@ func (p *processor) ReadingTime() int64 {
 // process input text via io.Reader
 func (p *processor) AddText(in io.Reader) {
 
+	st := newState(p)
+
 	tokens.Process(in, func(t string) {
 
 		p.tokensCounter++
 		p.buf.Push(t)
 
 		if p.buf.Full() {
-			p.tact()
+			p.tact(st)
 		}
 
 	})
 
 	for !p.buf.Empty() {
-		p.tact()
+		p.tact(st)
 	}
 
 	p.stat.EndTact()
@@ -78,6 +84,29 @@ func (p *processor) AddHTML(in io.Reader) {
 	})
 
 	p.AddText(bytes.NewReader(parser.Text()))
+}
+
+// process input html from web page
+func (p *processor) AddURL(url string) error {
+
+	parser := html.New()
+
+	opts := &html.GetOpts{
+		Timeout: time.Second * 10,
+		Agent:   "Lemmas",
+	}
+
+	if err := parser.Get(url, opts); err != nil {
+		return err
+	}
+
+	parser.EachImage(func(img string) {
+		p.imageCounter++
+	})
+
+	p.AddText(bytes.NewReader(parser.Text()))
+
+	return nil
 }
 
 // search keywords from word stream
@@ -110,11 +139,32 @@ func (p *processor) search(cur string, deep int) (string, int) {
 
 	forms.Each(str, func(f string) bool {
 		val := cur + f
+		p.currentWords[deep-1] = f
 
 		if sr, ss := p.search(val, deep+1); ss > 0 {
 			cmpPhrase(ss, sr)
 			return true
 		}
+
+		dicts.Each(f, func(f string) bool {
+
+			val := cur + f
+
+			if sr, ss := p.search(val, deep+1); ss > 0 {
+				cmpPhrase(ss, sr)
+				return true
+			}
+
+			if size <= deep {
+
+				if ok := keywords.Is(val); ok {
+					cmpPhrase(deep, val)
+				}
+
+			}
+
+			return true
+		})
 
 		if size <= deep {
 
@@ -122,53 +172,6 @@ func (p *processor) search(cur string, deep int) (string, int) {
 				cmpPhrase(deep, val)
 			}
 
-			if deep == 1 && p.buf.Len() > 1 {
-
-				isName := false
-
-				if dicts.InDict("m_names", val) {
-					isName = true
-					wn := p.buf.Get(1)
-					forms.Each(wn, func(fn string) bool {
-						if dicts.InDict("m_lastnames", fn) {
-							res = val + "_" + fn
-							if _, has := p.localKeywords[res]; !has {
-								p.localKeywords[res] = []string{res, fn, val}
-							}
-							cmpPhrase(2, res)
-							return false
-						}
-						return true
-					})
-				}
-
-				if dicts.InDict("w_names", val) {
-					isName = true
-					wn := p.buf.Get(1)
-					forms.Each(wn, func(fn string) bool {
-						if dicts.InDict("w_lastnames", fn) {
-							res = val + "_" + fn
-							if _, has := p.localKeywords[res]; !has {
-								p.localKeywords[res] = []string{res, fn, val}
-							}
-							cmpPhrase(2, res)
-							return false
-						}
-						return true
-					})
-				}
-
-				if isName {
-					wn := p.buf.Get(1)
-					if dicts.InDict("roman", wn) {
-						res = val + "_" + wn
-						if _, has := p.localKeywords[res]; !has {
-							p.localKeywords[res] = []string{res}
-						}
-						cmpPhrase(2, res)
-					}
-				}
-			}
 		}
 
 		return true
@@ -178,16 +181,23 @@ func (p *processor) search(cur string, deep int) (string, int) {
 }
 
 // one buffer process tact
-func (p *processor) tact() {
+func (p *processor) tact(st *state) {
 	if eos[p.buf.Get(0)] {
 		p.stat.EndTact()
 		p.buf.Shift(1)
 		return
 	}
 
+	st.Reset()
+
 	if res, num := p.search("", 1); num > 0 {
 		if res != "" {
 			for _, v := range p.getKeywordData(res) {
+				if idx := strings.IndexByte(v, '$'); idx >= 0 {
+					for i, rep := range p.replacing[:num] {
+						v = strings.ReplaceAll(v, rep, p.currentWords[i])
+					}
+				}
 				p.stat.AddKey(v)
 			}
 		}
@@ -220,4 +230,10 @@ func (p *processor) Reset() {
 	p.tokensCounter = 0
 	p.imageCounter = 0
 	p.localKeywords = make(map[string][]string)
+	p.currentWords = make([]string, bufferSize)
+	p.replacing = make([]string, bufferSize)
+
+	for i := range p.replacing {
+		p.replacing[i] = "$" + strconv.Itoa(i)
+	}
 }
