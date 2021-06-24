@@ -2,11 +2,8 @@ package dicts
 
 import (
 	"bufio"
-	"bytes"
-	"io"
+	"embed"
 	"strings"
-
-	_ "embed" //nolint
 )
 
 // Iterator func for Each call
@@ -16,72 +13,33 @@ var (
 	dataset map[string]string
 )
 
-//go:embed dict_m_names.txt
-var dictMNames []byte
-
-//go:embed dict_w_names.txt
-var dictWNames []byte
-
-//go:embed dict_countries.txt
-var dictCountries []byte
-
-//go:embed dict_roman.txt
-var dictRoman []byte
-
-//go:embed dict_w_lastnames.txt
-var dictWLastnames []byte
-
-//go:embed dict_m_lastnames.txt
-var dictMLastnames []byte
-
-//go:embed dict_cities.txt
-var dictCities []byte
-
-//go:embed dict_companies.txt
-var dictCompanies []byte
-
-//go:embed dict_m_patronymics.txt
-var dictMPatronymics []byte
-
-//go:embed dict_w_patronymics.txt
-var dictWPatronymics []byte
+//go:embed dict_*.txt
+var dictsFS embed.FS
 
 func init() {
 	dataset = make(map[string]string)
 
-	loadEmbed("cities", bytes.NewReader(dictCities))
-	dictCities = nil
+	flist, err := dictsFS.ReadDir(".")
+	if err != nil {
+		panic(err)
+	}
 
-	loadEmbed("companies", bytes.NewReader(dictCompanies))
-	dictCompanies = nil
-
-	loadEmbed("countries", bytes.NewReader(dictCountries))
-	dictCountries = nil
-
-	loadEmbed("mlastnames", bytes.NewReader(dictMLastnames))
-	dictMLastnames = nil
-
-	loadEmbed("mnames", bytes.NewReader(dictMNames))
-	dictMNames = nil
-
-	loadEmbed("mpatronymics", bytes.NewReader(dictMPatronymics))
-	dictMPatronymics = nil
-
-	loadEmbed("roman", bytes.NewReader(dictRoman))
-	dictRoman = nil
-
-	loadEmbed("wlastnames", bytes.NewReader(dictWLastnames))
-	dictWLastnames = nil
-
-	loadEmbed("wnames", bytes.NewReader(dictWNames))
-	dictWNames = nil
-
-	loadEmbed("wpatronymics", bytes.NewReader(dictWPatronymics))
-	dictWPatronymics = nil
-
+	for _, rec := range flist {
+		loadDict(rec.Name())
+	}
 }
 
-func loadEmbed(dict string, in io.Reader) {
+func loadDict(filename string) {
+
+	size := len(filename)
+	dict := strings.ReplaceAll(filename[5:size-4], "_", "")
+
+	in, err := dictsFS.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer in.Close()
+
 	br := bufio.NewReader(in)
 	value := ":" + dict
 
