@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: generate lint test
+all: generate lint test statistics
 
 generate:
 	@echo "Generate dictionaries..."
@@ -19,6 +19,11 @@ generate:
 lint:
 	@echo "Run linter..."
 	golangci-lint run
+
 test:
 	@echo "Run test..."
 	go test ./... -cover
+
+statistics:
+	@echo "Get statistics..."
+	go run tools/stat/main.go

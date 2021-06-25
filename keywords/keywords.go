@@ -70,3 +70,8 @@ func Is(src string) bool {
 	_, has := data[src]
 	return has
 }
+
+// Get total keywords and templates number
+func Size() int {
+	return len(data)
+}

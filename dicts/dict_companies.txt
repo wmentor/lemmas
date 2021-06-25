@@ -4,7 +4,9 @@ microsoft
 nasa
 nvidia
 spacex
+xiaomi
 газпром
+инвитро
 мтс
 ростелеком
 яндекс

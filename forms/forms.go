@@ -81,3 +81,8 @@ func Get(src string) ([]string, bool) {
 	}
 	return nil, false
 }
+
+// Get total forms number
+func Size() int {
+	return len(formData)
+}

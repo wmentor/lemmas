@@ -101,3 +101,8 @@ func Get(src string) ([]string, bool) {
 	}
 	return nil, false
 }
+
+// Get all dicts size
+func Size() int {
+	return len(dataset)
+}
