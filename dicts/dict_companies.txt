@@ -4,7 +4,10 @@ google
 microsoft
 nasa
 nvidia
+rambler
 spacex
+twitter
+wildberries
 xiaomi
 газпром
 инвитро
